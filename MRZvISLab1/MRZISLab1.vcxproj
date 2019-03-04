@@ -23,6 +23,7 @@
     <ProjectGuid>{8FDB616F-A15B-4DF8-B37C-D826C543E466}</ProjectGuid>
     <RootNamespace>MRZISLab1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>MRZvISLab1</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

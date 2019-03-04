@@ -1,69 +1,86 @@
 #include "pipeline_lib.h"
 
 
-vector<bool*> Pipeline::start(const vector<int> vectorA, const vector<int> vectorB){
+vector<bool *> Pipeline::start(const vector<int> vectorMd, const vector<int> vectorMr) {
 
-	vector<bool*> output;
+	vector<bool *>	output;
+	bool			*multiplicand,
+					*multiplier,
+					*vectorRB;
 
 	cout << "$$$$$$$$Pipeline start's here$$$$$$$$\n";
 
+	for (int i = 0; i < sizeof(vectorMd); i++) {
+		multiplicand = intToBool(vectorMd[i]);
+		multiplier = intToBool(vectorMr[i]);
+		vectorRB = binaryMultipl(multiplicand, multiplier);
 
+		for (int j = 0; j < sizeof(vectorRB); j++) {
+			cout << vectorRB[j];
+		}
+		cout << endl;
+		system("pause");
+	}
 
 	return output;
 	cout << "&&&&&&&&Pipeline stop's here&&&&&&&&\n";
 }
 
-bool* Pipeline::intToBool(const int input) {
+bool *Pipeline::intToBool(int intVal) {
 
-	bool*	output = new bool[NUMBER_OF_DIGITS];
-	int		temp = input;
+	bool*	binVal = new bool[NUMBER_OF_DIGITS];
 
 	for (int i = 0; i < NUMBER_OF_DIGITS; i++){
-		output[i] = (temp & 1);
-		temp >>= 1;
-		cout << output[i];
+		binVal[i] = (intVal & 1);
+		intVal >>= 1;
+		cout << binVal[i];
 	}
-	return output;
+	return binVal;
 }
 
-bool* Pipeline::binaryMultipl(const bool* factor1, const bool* factor2){
+bool *Pipeline::binaryMultipl(const bool *multiplicand, const bool *multiplier) {
 
-	bool* 	result = new bool[NOD_MAX],
-			currentTerm;
+	bool 	*product = new bool[NOD_MAX] { 0 },
+			*curSmd;
 
 	for (int i = 0 ; i < NUMBER_OF_DIGITS ; i++){
-		if(factor2 [i] == 1){
-			currentTerm = shift(factor1, i);
+		if(multiplier [i] == 1){
+			curSmd = shift(multiplicand, i);
+			product = addition(product, curSmd);
 		}
 	}
+
+	return product;
 }
 
-bool* Pipeline::addition (const bool* term1, const bool* term2){
+bool *Pipeline::addition(const bool *summand1, const bool *summand2) {
 
-	const int 	NUMDER_OF_DIGITS_HERE = sizeof(term1);
-	bool*		rezult = new bool[NUMDER_OF_DIGITS_HERE];
+	const int 	NUMDER_OF_DIGITS_HERE = sizeof(summand1);
+	bool		*summ = new bool[NUMDER_OF_DIGITS_HERE];
 	bool		extraDigit = 0;
 	int			tempSumm = 0;
 
 	for (int i = 0 ; i < NUMBER_OF_DIGITS ; i++){
-		tempSumm += term1[i]+term2[i]+extraDigit;
+		tempSumm += summand1[i]+summand2[i]+extraDigit;
 		if(tempSumm > 1){
 			extraDigit = 1;
 		} else {
 			extraDigit = 0;
 		}
-		rezult[i] = tempSumm % 2;
+		summ[i] = tempSumm % 2;
 	}
 	if(extraDigit == 1){
-		rezult[NUMDER_OF_DIGITS_HERE] = extraDigit;
+		summ[NUMDER_OF_DIGITS_HERE] = extraDigit;
 	}
+
+	return summ;
 }
 
-bool* Pipeline::shift (const bool* binNum, const int shift){
+bool *Pipeline::shift(const bool *operand, const int shift) {
 
-	bool* rezult = new bool[sizeof(binNum) + shift]{ 0 };
+	bool* rezult = new bool[sizeof(operand) + shift]{ 0 };
 
-	for (int i = shift; i < sizeof(rezult); rezult[i] = binNum[i++ - shift]);	//DANGEROUS CODE!!!
+	for (int i = shift; i < sizeof(rezult); rezult[i] = operand[i++ - shift]);	//DANGEROUS CODE!!!
 
 	return rezult;
 };
