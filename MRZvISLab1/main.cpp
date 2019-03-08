@@ -12,8 +12,8 @@ int main() {
 					vectorB,
 					vectorRezult;
 
-	vectorA.push_back({ 8 });
-	vectorB.push_back({ 7 });
+	vectorA.push_back({ 7 });
+	vectorB.push_back({ 9 });
 
 	vectorA.push_back({ 10 });
 	vectorB.push_back({ -9 });

@@ -1,51 +1,59 @@
 #include "pipeline_lib.h"
 
 
-vector<bool *> Pipeline::start(const vector<int> vectorMd, const vector<int> vectorMr) {
+vector<vector<bool>> Pipeline::start(const vector<int> vectorMd, const vector<int> vectorMr) {
 
-	vector<bool *>	output;
-	bool			*multiplicand,
-					*multiplier,
-					*vectorRB;
+	vector<vector<bool>>	vectorRB;
+	vector<bool>			multiplicand,
+							multiplier,
+							product;
 
-	cout << "$$$$$$$$Pipeline start's here$$$$$$$$\n";
+	cout << "$$$$$$$$Pipeline starts here$$$$$$$$\n";
 
-	for (int i = 0; i < sizeof(vectorMd); i++) {
+	for (int i = 0; i < vectorMd.size(); i++) {
 		multiplicand = intToBool(vectorMd[i]);
-		multiplier = intToBool(vectorMr[i]);
-		vectorRB = binaryMultipl(multiplicand, multiplier);
+		cout << vectorMd[i] << " = ";
+		out(multiplicand);
 
-		for (int j = 0; j < sizeof(vectorRB); j++) {
-			cout << vectorRB[j];
-		}
+		multiplier = intToBool(vectorMr[i]);
+		cout << endl << vectorMr[i] << " = ";
+		out(multiplier);
+
+		product = binaryMultipl(multiplicand, multiplier);
+		cout << "\n==\n";
+		out(product);
 		cout << endl;
+
 		system("pause");
 	}
 
-	return output;
-	cout << "&&&&&&&&Pipeline stop's here&&&&&&&&\n";
+	cout << "&&&&&&&&Pipeline stops here&&&&&&&&\n";
+
+	return vectorRB;
 }
 
-bool *Pipeline::intToBool(int intVal) {
+vector<bool> Pipeline::intToBool(int intVal) {
 
-	bool*	binVal = new bool[NUMBER_OF_DIGITS];
+	vector<bool>	binVal(NUMBER_OF_DIGITS);
 
 	for (int i = 0; i < NUMBER_OF_DIGITS; i++){
 		binVal[i] = (intVal & 1);
 		intVal >>= 1;
-		cout << binVal[i];
 	}
+
 	return binVal;
 }
 
-bool *Pipeline::binaryMultipl(const bool *multiplicand, const bool *multiplier) {
+vector<bool> Pipeline::binaryMultipl(const vector<bool> multiplicand, const vector<bool> multiplier) {
 
-	bool 	*product = new bool[NOD_MAX] { 0 },
-			*curSmd;
+	vector<bool>	product(NUMBER_OF_DIGITS*2),
+					curSmd = multiplicand;
 
 	for (int i = 0 ; i < NUMBER_OF_DIGITS ; i++){
-		if(multiplier [i] == 1){
-			curSmd = shift(multiplicand, i);
+		if (multiplier[i] == 1) {
+			if (i > 0) {
+				curSmd = shift(multiplicand, i);
+			}
 			product = addition(product, curSmd);
 		}
 	}
@@ -53,34 +61,39 @@ bool *Pipeline::binaryMultipl(const bool *multiplicand, const bool *multiplier) 
 	return product;
 }
 
-bool *Pipeline::addition(const bool *summand1, const bool *summand2) {
+vector<bool> Pipeline::addition(const vector<bool> summand1, const vector<bool> summand2) {
 
-	const int 	NUMDER_OF_DIGITS_HERE = sizeof(summand1);
-	bool		*summ = new bool[NUMDER_OF_DIGITS_HERE];
-	bool		extraDigit = 0;
-	int			tempSumm = 0;
+	vector<bool>	summ(summand1.size());
+	bool			extraDigit = 0;
+	int				iterationSumm = 0,
+					i;
 
-	for (int i = 0 ; i < NUMBER_OF_DIGITS ; i++){
-		tempSumm += summand1[i]+summand2[i]+extraDigit;
-		if(tempSumm > 1){
-			extraDigit = 1;
-		} else {
-			extraDigit = 0;
-		}
-		summ[i] = tempSumm % 2;
+	for (i = 0 ; i < summand2.size(); i++){
+		iterationSumm = summand1[i]+summand2[i]+extraDigit;
+		extraDigit = (iterationSumm > 1) ? 1 : 0;
+		summ[i] = iterationSumm % 2;
 	}
 	if(extraDigit == 1){
-		summ[NUMDER_OF_DIGITS_HERE] = extraDigit;
+		summ[++i] = extraDigit;
 	}
 
 	return summ;
 }
 
-bool *Pipeline::shift(const bool *operand, const int shift) {
+vector<bool> Pipeline::shift(const vector<bool> operand, const int shift) {
 
-	bool* rezult = new bool[sizeof(operand) + shift]{ 0 };
+	vector<bool> rezult(operand.size() + shift);
 
-	for (int i = shift; i < sizeof(rezult); rezult[i] = operand[i++ - shift]);	//DANGEROUS CODE!!!
+	for (int i = shift; i < rezult.size(); i++) {
+		rezult[i] = operand[i - shift];
+	}
 
 	return rezult;
 };
+
+void Pipeline::out(const vector<bool> &input) {
+
+	for (int i = 0; i < input.size(); i++) {
+		cout << input[i];
+	}
+}
