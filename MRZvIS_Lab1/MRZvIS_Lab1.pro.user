@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.7.1, 2019-03-10T13:10:30. -->
+<!-- Written by QtCreator 4.7.1, 2019-03-22T15:21:58. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -290,8 +290,8 @@
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">MRZvIS_Lab1</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/LERNO DE LANGAGO E PROGRAMACIO E SCIENSO ETC/SomeProgs/MRZvIS_s4_Labs/MRZvIS_Lab1/MRZvIS_Lab1.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">MRZvIS_Lab12</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/LERNO_DE_LANGAGO_E_PROGRAMACIO_E_SCIENSO_ETC/SomeProgs/MRZvIS_s4_Labs/MRZvIS_Lab1/MRZvIS_Lab1.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">MRZvIS_Lab1.pro</value>

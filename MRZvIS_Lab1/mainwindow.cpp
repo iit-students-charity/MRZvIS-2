@@ -2,6 +2,9 @@
 
 
 MainWindow::MainWindow() {
+    const int WINDOW_WIDTH  = 700,
+              WINDOW_HEIGHT = 500;
+    const string WINDOW_TITLE = "PIPELINE";
 
     textBox = new QTextEdit();
 
@@ -12,16 +15,15 @@ MainWindow::MainWindow() {
     vertice->setSpacing(20);
 
     vertice->addWidget(textBox);
-    vertice->addWidget(buttonStart);
+    //vertice->addWidget(buttonStart);
 
     widget.setLayout(vertice);
     widget.setWindowTitle("PIPELINE");
-    widget.setMinimumWidth(500);
-    widget.setMinimumHeight(200);
+    widget.setMinimumWidth(WINDOW_WIDTH);
+    widget.setMinimumHeight(WINDOW_HEIGHT);
     widget.show();
 }
 
 void MainWindow::printText(const QString &input) {
-
     textBox->insertPlainText(input);
 }

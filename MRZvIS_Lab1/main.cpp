@@ -10,7 +10,6 @@ using namespace std;
 
 
 int main(int argc, char** argv) {
-
     vector<int>		vectorA,
                     vectorB,
                     vectorRezult;
@@ -23,7 +22,7 @@ int main(int argc, char** argv) {
     vectorB.push_back({ 9 });
 
     vectorA.push_back({ 10 });
-    vectorB.push_back({ -9 });
+    vectorB.push_back({ 0 });
 
     vectorA.push_back({ 16 });
     vectorB.push_back({ 16 });
