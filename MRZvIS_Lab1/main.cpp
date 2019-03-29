@@ -27,6 +27,9 @@ int main(int argc, char** argv) {
     vectorA.push_back({ 16 });
     vectorB.push_back({ 16 });
 
+    vectorA.push_back({ 63 });
+    vectorB.push_back({ 63 });
+
     Pipeline::start(vectorA, vectorB, mainWindow);
 
     return app.exec();
