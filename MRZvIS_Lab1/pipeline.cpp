@@ -6,6 +6,7 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
                             const vector<int> &vectorMr,
                             MainWindow        &mainWindow){
     const size_t OPERANDS_NUMBER = vectorMd.size(),
+                 PREPROC_NUMBER  = DIGITS_NUMBER*2,
                  STEPS_NUMBER    = DIGITS_NUMBER*OPERANDS_NUMBER;
     vector<bool> *multiplicand   = new vector<bool>[OPERANDS_NUMBER],
                  *multiplier     = new vector<bool>[OPERANDS_NUMBER],
@@ -15,6 +16,10 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
     vector<size_t> stage,
                    curDigit;
     size_t       operandsInLine  = 0;
+
+    mainWindow.getTable()->clear();
+    mainWindow.getTable()->setRowCount(int(STEPS_NUMBER));
+    mainWindow.getTable()->setColumnCount(int(PREPROC_NUMBER));
 
     mainWindow.printText("$$$$$$$$Pipeline starts here$$$$$$$$\n");
 

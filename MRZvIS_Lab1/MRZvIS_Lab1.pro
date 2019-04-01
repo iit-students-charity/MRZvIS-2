@@ -28,12 +28,14 @@ CONFIG += \
 SOURCES += \
         main.cpp \
     mainwindow.cpp \
-    pipeline.cpp
+    pipeline.cpp \
+    controller.cpp
 
 HEADERS += \
     mainwindow.h \
     mainwindow.h \
-    pipeline.h
+    pipeline.h \
+    controller.h
 
 FORMS +=
 

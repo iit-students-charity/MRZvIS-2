@@ -14,19 +14,19 @@ using namespace std;
 
 class Pipeline {
 public:
-    static vector<int> start(const vector<int>&,
+    vector<int> start(const vector<int>&,
                              const vector<int>&,
                              MainWindow&);
 private:
     static const int    DIGITS_NUMBER = 6;
 
-    static vector<bool> intToBool(int);
-    static int          boolToInt(vector<bool>);
-    static vector<bool> addition(vector<bool>&,
+    vector<bool> intToBool(int);
+    int          boolToInt(vector<bool>);
+    vector<bool> addition(vector<bool>&,
                                  const vector<bool>&);
-    static vector<bool> shift(const vector<bool>&,
+    vector<bool> shift(const vector<bool>&,
                               const size_t&);
-    static void out(const vector<bool>&,
+    void out(const vector<bool>&,
                     MainWindow&);
 };
 
