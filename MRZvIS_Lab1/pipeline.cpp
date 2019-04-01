@@ -6,8 +6,8 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
                             const vector<int> &vectorMr,
                             MainWindow        &mainWindow){
     const size_t OPERANDS_NUMBER = vectorMd.size(),
-                 PREPROC_NUMBER  = DIGITS_NUMBER*2,
-                 STEPS_NUMBER    = DIGITS_NUMBER*OPERANDS_NUMBER;
+                 STAGES_NUMBER   = DIGITS_NUMBER*2,
+                 STEPS_NUMBER    = DIGITS_NUMBER*2+OPERANDS_NUMBER;
     vector<bool> *multiplicand   = new vector<bool>[OPERANDS_NUMBER],
                  *multiplier     = new vector<bool>[OPERANDS_NUMBER],
                  *currentSummand = new vector<bool>[OPERANDS_NUMBER],
@@ -15,11 +15,13 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
     vector<int>  productInt;
     vector<size_t> stage,
                    curDigit;
-    size_t       operandsInLine  = 0;
+    size_t       operandsInLine  = 0,
+                 step;
+    QString      cellText = "";
 
     mainWindow.getTable()->clear();
-    mainWindow.getTable()->setRowCount(int(STEPS_NUMBER));
-    mainWindow.getTable()->setColumnCount(int(PREPROC_NUMBER));
+    mainWindow.getTable()->setRowCount(int(STEPS_NUMBER+1));
+    mainWindow.getTable()->setColumnCount(int(STAGES_NUMBER+1));
 
     mainWindow.printText("$$$$$$$$Pipeline starts here$$$$$$$$\n");
 
@@ -39,7 +41,7 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
         curDigit.push_back(0);
     }
 
-    for (size_t step = 0; step < STEPS_NUMBER; step++){
+    for (step = 0; step < STEPS_NUMBER; step++){
         mainWindow.printText("\n\nSTEP N" + stringify(step) + ":");
 
         for (size_t curOpera = 0; curOpera <= operandsInLine; curOpera++){
@@ -47,40 +49,56 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
                 continue;
             }
 
+            cellText = "";
+
             switch(stage[curOpera]){
             case 0:
                 currentSummand[curOpera] = multiplicand[curOpera];
+                cellText+="SHIFTING";
                 if (multiplier[curOpera][curDigit[curOpera]] == 1){
                     if (curDigit[curOpera] > 0){
+                        cellText+="\n " + boolToString(multiplicand[curOpera]) +
+                                  " <[" + stringify(curDigit[curOpera]) + "]<";
                         mainWindow.printText("\n" + stringify(curOpera+1) + ") shifting ");
                         out(multiplicand[curOpera], mainWindow);
                         mainWindow.printText(" <[" + stringify(curDigit[curOpera]) + "]< ");
 
-                        currentSummand[curOpera] = shift(multiplicand[curOpera], curDigit[curOpera]);
+                        currentSummand[curOpera] = shift(multiplicand[curOpera],
+                                                         curDigit[curOpera]);
 
+                        cellText+=boolToString(currentSummand[curOpera]);
                         out(currentSummand[curOpera], mainWindow);
                     }
                 } else {
                     curDigit[curOpera]++;
+                    cellText+="\n Nothing to shift.";
                 }
+
                 stage[curOpera] ++;
                 break;
             case 1:
+                cellText+="ADDITION"
+                          "\n " + boolToString(product[curOpera]) + " + " +
+                          boolToString(currentSummand[curOpera]) + " = \n";
+                mainWindow.printText("\n" + stringify(curOpera+1) + ") ");
+                out(product[curOpera], mainWindow);
+                mainWindow.printText(" + ");
+                out(currentSummand[curOpera], mainWindow);
+                mainWindow.printText(" = ");
                 if (multiplier[curOpera][curDigit[curOpera]] == 1){
-                    mainWindow.printText("\n" + stringify(curOpera+1) + ") ");
-                    out(product[curOpera], mainWindow);
-                    mainWindow.printText(" + ");
-                    out(currentSummand[curOpera], mainWindow);
-                    mainWindow.printText(" = ");
-
-                    product[curOpera] = addition(product[curOpera], currentSummand[curOpera]);
-
-                    out(product[curOpera], mainWindow);
+                    product[curOpera] = addition(product[curOpera],
+                                                 currentSummand[curOpera]);
                 }
+                cellText+=boolToString(product[curOpera]);
+                out(product[curOpera], mainWindow);
                 curDigit[curOpera]++;
                 stage[curOpera] = 0;
                 break;
             }
+            cellText+="\nTime:"+stringify(step+curOpera+1);
+            mainWindow.getTable()->setItem(int(step+curOpera),
+                                           int(step),
+                                           new QTableWidgetItem(cellText));
         }
 
         if(operandsInLine < OPERANDS_NUMBER - 1){
@@ -89,9 +107,16 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
     }
 
      mainWindow.printText("\nRESULTS:\n");
+     cellText.clear();
+     step++;
 
     for (size_t i = 0; i < OPERANDS_NUMBER; i++){
         productInt.push_back(boolToInt(product[i]));
+
+        cellText+="RESULT:\n " + stringify(boolToInt(product[i]));
+        mainWindow.getTable()->setItem(int(step+i+1),
+                                       int(step+1),
+                                       new QTableWidgetItem(cellText));
         mainWindow.printText("\n" + stringify(i) + ") " + stringify(productInt[i]) + " = ");
         out(product[i], mainWindow);
     }
@@ -132,18 +157,17 @@ vector<bool> Pipeline::shift(const vector<bool> &operand,
     return rezult;
 };
 
-vector<bool> Pipeline::addition(vector<bool> &summand1,
-                                const vector<bool> &summand2){
-    vector<bool> summ(summand2.size());
+vector<bool> Pipeline::addition(const vector<bool> &product,
+                                vector<bool> &summand){
+    vector<bool> summ(summand.size());
     bool		 extraDigit = 0;
     int			 iterationSumm = 0;
-    size_t       i;
 
-    for (i = 0 ; i < summand2.size(); i++){
-        if(summand1.size() <= i){
-            summand1.push_back(0);
+    for (size_t i = 0 ; i < product.size(); i++){
+        if(summand.size() <= i){
+            summand.push_back(0);
         }
-        iterationSumm = summand1[i]+summand2[i]+extraDigit;
+        iterationSumm = product[i]+summand[i]+extraDigit;
         extraDigit = (iterationSumm > 1) ? 1 : 0;
         summ[i] = iterationSumm % 2;
     }
@@ -159,4 +183,13 @@ void Pipeline::out(const vector<bool> &input,
     for (size_t i = input.size() - 1; i < input.size(); i--){
         mainWindow.printText(stringify(input[i]));
     }
+}
+
+QString Pipeline::boolToString(const vector<bool> &input){
+    QString output = "";
+
+    for (size_t i = input.size()-1; i<input.size();i--){
+        output+=stringify(input[i]);
+    }
+    return output;
 }

@@ -9,6 +9,7 @@
 #include <QTableWidget>
 #include <QLineEdit>
 #include <QLabel>
+#include <QTableWidgetItem>
 
 
 class MainWindow : public QWidget {
