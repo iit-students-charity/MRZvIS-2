@@ -2,22 +2,22 @@
 #include "mainwindow.h"
 
 
-vector<int> Pipeline::start(const vector<int> &vectorMd,
-                            const vector<int> &vectorMr,
+vector<int> Pipeline::start(const vector<int> &vectorA,
+                            const vector<int> &vectorB,
                             MainWindow        &mainWindow){
-    const size_t OPERANDS_NUMBER = vectorMd.size(),
-                 STAGES_NUMBER   = DIGITS_NUMBER*2,
-                 STEPS_NUMBER    = DIGITS_NUMBER*2+OPERANDS_NUMBER;
-    vector<bool> *multiplicand   = new vector<bool>[OPERANDS_NUMBER],
-                 *multiplier     = new vector<bool>[OPERANDS_NUMBER],
+    const size_t OPERANDS_NUMBER = vectorA.size(),
+                 STAGES_NUMBER   = DIGITS_NUMBER*2+1,
+                 STEPS_NUMBER    = DIGITS_NUMBER*2+OPERANDS_NUMBER+1;
+    size_t       operandsInLine  = 0,
+                 step;
+    QString      cellText = "";
+    vector<bool> *boolA          = new vector<bool>[OPERANDS_NUMBER],
+                 *boolB          = new vector<bool>[OPERANDS_NUMBER],
                  *currentSummand = new vector<bool>[OPERANDS_NUMBER],
                  *product        = new vector<bool>[OPERANDS_NUMBER];
     vector<int>  productInt;
     vector<size_t> stage,
                    curDigit;
-    size_t       operandsInLine  = 0,
-                 step;
-    QString      cellText = "";
 
     mainWindow.getTable()->clear();
     mainWindow.getTable()->setRowCount(int(STEPS_NUMBER+1));
@@ -27,14 +27,14 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
 
     mainWindow.printText("CONVERTING INT TO BOOL...");
     for (size_t i = 0; i < OPERANDS_NUMBER; i++){
-        multiplicand[i] = intToBool(vectorMd[i]);
-        multiplier[i] = intToBool(vectorMr[i]);
+        boolA[i] = intToBool(vectorA[i]);
+        boolB[i] = intToBool(vectorB[i]);
 
         mainWindow.printText("\nPair " + stringify(i) + ":\n" +
-                             stringify(vectorMd[i]) + " = ");
-        out(multiplicand[i], mainWindow);
-        mainWindow.printText("\n" + stringify(vectorMr[i]) + " = ");
-        out(multiplier[i], mainWindow);
+                             stringify(vectorA[i]) + " = ");
+        out(boolA[i], mainWindow);
+        mainWindow.printText("\n" + stringify(vectorB[i]) + " = ");
+        out(boolB[i], mainWindow);
 
         product[i] = intToBool(0);
         stage.push_back(0);
@@ -53,39 +53,39 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
 
             switch(stage[curOpera]){
             case 0:
-                currentSummand[curOpera] = multiplicand[curOpera];
-                cellText+="SHIFTING";
-                if (multiplier[curOpera][curDigit[curOpera]] == 1){
-                    if (curDigit[curOpera] > 0){
-                        cellText+="\n " + boolToString(multiplicand[curOpera]) +
-                                  " <[" + stringify(curDigit[curOpera]) + "]<";
-                        mainWindow.printText("\n" + stringify(curOpera+1) + ") shifting ");
-                        out(multiplicand[curOpera], mainWindow);
-                        mainWindow.printText(" <[" + stringify(curDigit[curOpera]) + "]< ");
+                cellText+=stringify(curOpera+1) + ")SHIFTING ";
+                mainWindow.printText("\n" + stringify(curOpera+1) + ")SHIFTING ");
 
-                        currentSummand[curOpera] = shift(multiplicand[curOpera],
-                                                         curDigit[curOpera]);
+                currentSummand[curOpera] = boolA[curOpera];
+                if (boolB[curOpera][curDigit[curOpera]] == 1){
+                    cellText+="\n " + boolToString(boolA[curOpera]);
+                    out(boolA[curOpera], mainWindow);
 
-                        cellText+=boolToString(currentSummand[curOpera]);
-                        out(currentSummand[curOpera], mainWindow);
-                    }
+                    currentSummand[curOpera] = shift(boolA[curOpera],
+                                                     curDigit[curOpera]);
                 } else {
-                    curDigit[curOpera]++;
-                    cellText+="\n Nothing to shift.";
+                    cellText+="\n 000000";
+                    mainWindow.printText("\n 000000");
+
+                    currentSummand[curOpera] = intToBool(0);
                 }
+                cellText+=" <[" + stringify(curDigit[curOpera]) + "]< " +
+                          boolToString(currentSummand[curOpera]);
+                mainWindow.printText(" <[" + stringify(curDigit[curOpera]) + "]< ");
+                out(currentSummand[curOpera], mainWindow);
 
                 stage[curOpera] ++;
                 break;
             case 1:
-                cellText+="ADDITION"
-                          "\n " + boolToString(product[curOpera]) + " + " +
-                          boolToString(currentSummand[curOpera]) + " = \n";
-                mainWindow.printText("\n" + stringify(curOpera+1) + ") ");
+                cellText+=stringify(curOpera+1) + ")ADDITION\n " +
+                          boolToString(product[curOpera]) + " + " +
+                          boolToString(currentSummand[curOpera]) + " = ";
+                mainWindow.printText("\n" + stringify(curOpera+1) + ")ADDITION\n ");
                 out(product[curOpera], mainWindow);
                 mainWindow.printText(" + ");
                 out(currentSummand[curOpera], mainWindow);
                 mainWindow.printText(" = ");
-                if (multiplier[curOpera][curDigit[curOpera]] == 1){
+                if (boolB[curOpera][curDigit[curOpera]] == 1){
                     product[curOpera] = addition(product[curOpera],
                                                  currentSummand[curOpera]);
                 }
@@ -122,6 +122,8 @@ vector<int> Pipeline::start(const vector<int> &vectorMd,
     }
 
     mainWindow.printText("\n&&&&&&&&Pipeline stops here&&&&&&&&\n");
+    mainWindow.getTable()->resizeRowsToContents();
+    mainWindow.getTable()->resizeColumnsToContents();
 
     return productInt;
 }

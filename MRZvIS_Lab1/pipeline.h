@@ -22,8 +22,8 @@ private:
 
     vector<bool> intToBool(int);
     int          boolToInt(vector<bool>);
-    vector<bool> addition(const vector<bool>&,
-                          vector<bool>&);
+    static vector<bool> addition(const vector<bool>&,
+                                 vector<bool>&);
     vector<bool> shift(const vector<bool>&,
                        const size_t&);
     void         out(const vector<bool>&,
