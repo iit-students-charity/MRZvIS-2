@@ -1,15 +1,30 @@
+/*******************************************************************************************
+ *
+ * Лабораторная работа N1 по дисциплине "Модели Решения Задач в Интеллектуальных Системах"
+ * выполнено студентом БГУИР группы 721703
+ * Клюевым Александром Алексеевичем
+ *
+ * Файл реализации методов класса Pipeline.
+ * Метод Pipeline::start(args) является главным методом класса, в нём заключается
+ * передачи аргументов в конвеер,
+ * реализация конвеерной архитектуры
+ * и вывод результатов работы конвеера в MainWindow::table и MainWindow::textBox.
+ *
+ * версия 1.0
+ *
+ *******************************************************************************************/
 #include "pipeline.h"
 #include "mainwindow.h"
 
 
 vector<int> Pipeline::start(const vector<int> &vectorA,
                             const vector<int> &vectorB,
+                            const size_t      &timeParam,
                             MainWindow        &mainWindow){
     const size_t OPERANDS_NUMBER = vectorA.size(),
-                 STAGES_NUMBER   = DIGITS_NUMBER*2+1,
-                 STEPS_NUMBER    = DIGITS_NUMBER*2+OPERANDS_NUMBER+1;
-    size_t       operandsInLine  = 0,
-                 step;
+                 STAGES_NUMBER   = DIGITS_NUMBER*2+OPERANDS_NUMBER+1,
+                 STEPS_NUMBER    = DIGITS_NUMBER*2+OPERANDS_NUMBER*2;
+    size_t       operandsInLine  = 0;
     QString      cellText = "";
     vector<bool> *boolA          = new vector<bool>[OPERANDS_NUMBER],
                  *boolB          = new vector<bool>[OPERANDS_NUMBER],
@@ -41,7 +56,7 @@ vector<int> Pipeline::start(const vector<int> &vectorA,
         curDigit.push_back(0);
     }
 
-    for (step = 0; step < STEPS_NUMBER; step++){
+    for (size_t step = 0; step < STEPS_NUMBER; step++){
         mainWindow.printText("\n\nSTEP N" + stringify(step) + ":");
 
         for (size_t curOpera = 0; curOpera <= operandsInLine; curOpera++){
@@ -58,13 +73,13 @@ vector<int> Pipeline::start(const vector<int> &vectorA,
 
                 currentSummand[curOpera] = boolA[curOpera];
                 if (boolB[curOpera][curDigit[curOpera]] == 1){
-                    cellText+="\n " + boolToString(boolA[curOpera]);
+                    cellText+="\n  " + boolToString(boolA[curOpera]);
                     out(boolA[curOpera], mainWindow);
 
                     currentSummand[curOpera] = shift(boolA[curOpera],
                                                      curDigit[curOpera]);
                 } else {
-                    cellText+="\n 000000";
+                    cellText+="\n  000000";
                     mainWindow.printText("\n 000000");
 
                     currentSummand[curOpera] = intToBool(0);
@@ -77,7 +92,7 @@ vector<int> Pipeline::start(const vector<int> &vectorA,
                 stage[curOpera] ++;
                 break;
             case 1:
-                cellText+=stringify(curOpera+1) + ")ADDITION\n " +
+                cellText+=stringify(curOpera+1) + ")ADDITION\n  " +
                           boolToString(product[curOpera]) + " + " +
                           boolToString(currentSummand[curOpera]) + " = ";
                 mainWindow.printText("\n" + stringify(curOpera+1) + ")ADDITION\n ");
@@ -95,7 +110,7 @@ vector<int> Pipeline::start(const vector<int> &vectorA,
                 stage[curOpera] = 0;
                 break;
             }
-            cellText+="\nTime:"+stringify(step+curOpera+1);
+            cellText+="\nTime:"+stringify((step+1)*timeParam);
             mainWindow.getTable()->setItem(int(step+curOpera),
                                            int(step),
                                            new QTableWidgetItem(cellText));
@@ -107,20 +122,22 @@ vector<int> Pipeline::start(const vector<int> &vectorA,
     }
 
      mainWindow.printText("\nRESULTS:\n");
-     cellText.clear();
-     step++;
+     cellText="RESULTS:";
 
     for (size_t i = 0; i < OPERANDS_NUMBER; i++){
         productInt.push_back(boolToInt(product[i]));
 
-        cellText+="RESULT:\n " + stringify(boolToInt(product[i]));
-        mainWindow.getTable()->setItem(int(step+i+1),
-                                       int(step+1),
-                                       new QTableWidgetItem(cellText));
-        mainWindow.printText("\n" + stringify(i) + ") " + stringify(productInt[i]) + " = ");
+        cellText+="\n" + stringify(i+1) + ") " +
+                  stringify(vectorA[i]) + " * " + stringify(vectorB[i]) +
+                  " = " + stringify(productInt[i]) +
+                  " = " + boolToString(product[i]);
+        mainWindow.printText("\n" + stringify(i+1) + ") " + stringify(productInt[i]) + " = ");
         out(product[i], mainWindow);
     }
 
+    mainWindow.getTable()->setItem(int(STEPS_NUMBER),
+                                   int(STAGES_NUMBER),
+                                   new QTableWidgetItem(cellText));
     mainWindow.printText("\n&&&&&&&&Pipeline stops here&&&&&&&&\n");
     mainWindow.getTable()->resizeRowsToContents();
     mainWindow.getTable()->resizeColumnsToContents();

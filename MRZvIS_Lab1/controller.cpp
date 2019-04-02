@@ -1,3 +1,16 @@
+/*******************************************************************************************
+ *
+ * Лабораторная работа N1 по дисциплине "Модели Решения Задач в Интеллектуальных Системах"
+ * выполнено студентом БГУИР группы 721703
+ * Клюевым Александром Алексеевичем
+ *
+ * Файл реализации методов класса Controller, в конструкторе которого происходит
+ * инициализация главного окна приложения и запуск конвеера через функцию
+ * Pipeline::start(args).
+ *
+ * версия 1.0
+ *
+ *******************************************************************************************/
 #include "controller.h"
 
 
@@ -17,6 +30,7 @@ void Controller::handlePipe(){
                 inputB;
     int         inputASize,
                 inputBSize;
+    size_t      timeParam;
 
     inputA = mainWindow->getOp1Line()->text();
     inputB = mainWindow->getOp2Line()->text();
@@ -37,7 +51,9 @@ void Controller::handlePipe(){
         vectorB.push_back(inputB.split(" ")[i].toInt());
     }
 
-    pipe.start(vectorA, vectorB, *mainWindow);
+    timeParam = size_t(mainWindow->getTPLine()->text().toInt());
+
+    pipe.start(vectorA, vectorB, timeParam, *mainWindow);
 }
 
 Controller:: ~Controller(){

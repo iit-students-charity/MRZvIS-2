@@ -1,3 +1,14 @@
+/*******************************************************************************************
+ *
+ * Лабораторная работа N1 по дисциплине "Модели Решения Задач в Интеллектуальных Системах"
+ * выполнено студентом БГУИР группы 721703
+ * Клюевым Александром Алексеевичем
+ *
+ * Заголовочный файл класса MainWindow.
+ *
+ * версия 1.0
+ *
+ *******************************************************************************************/
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -18,7 +29,8 @@ public:
     MainWindow(QPushButton&);
     void         printText(const QString&);
     QLineEdit    *getOp1Line(),
-                 *getOp2Line();
+                 *getOp2Line(),
+                 *getTPLine();
     QTableWidget *getTable();
 private:
     QWidget      widget;
@@ -28,7 +40,8 @@ private:
     QPushButton  *buttonStart;
     QTableWidget *table;
     QLineEdit    *operand1Line,
-                 *operand2Line;
+                 *operand2Line,
+                 *timeParamLine;
 };
 
 #endif // MAINWINDOW_H
