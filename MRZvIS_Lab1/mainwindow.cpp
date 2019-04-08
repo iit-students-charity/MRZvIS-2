@@ -35,6 +35,7 @@ MainWindow::MainWindow(QPushButton& button) {
     lines->addWidget(operand2Line);
     lines->addWidget(timeParamLabel);
     lines->addWidget(timeParamLine);
+    timeParamLine->setText("1");
 
     table =  new QTableWidget();
 

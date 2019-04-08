@@ -17,6 +17,7 @@
 #include <iostream>
 #include <vector>
 #include <QDebug>
+#include <math.h>
 
 #include "mainwindow.h"
 
@@ -25,8 +26,8 @@ using namespace std;
 
 class Pipeline {
 public:
-    vector<int> start(const vector<int>&,
-                      const vector<int>&,
+    vector<int> start(vector<int>,
+                      vector<int>,
                       const size_t&,
                       MainWindow&);
 private:

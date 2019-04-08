@@ -17,13 +17,13 @@
 #include "mainwindow.h"
 
 
-vector<int> Pipeline::start(const vector<int> &vectorA,
-                            const vector<int> &vectorB,
+vector<int> Pipeline::start(vector<int> vectorA,
+                            vector<int> vectorB,
                             const size_t      &timeParam,
                             MainWindow        &mainWindow){
     const size_t OPERANDS_NUMBER = vectorA.size(),
-                 STAGES_NUMBER   = DIGITS_NUMBER*2+OPERANDS_NUMBER+1,
-                 STEPS_NUMBER    = DIGITS_NUMBER*2+OPERANDS_NUMBER*2;
+                 STAGES_NUMBER   = DIGITS_NUMBER*2+OPERANDS_NUMBER,
+                 STEPS_NUMBER    = DIGITS_NUMBER*2+(OPERANDS_NUMBER)*2;
     size_t       operandsInLine  = 0;
     QString      cellText = "";
     vector<bool> *boolA          = new vector<bool>[OPERANDS_NUMBER],
@@ -42,6 +42,14 @@ vector<int> Pipeline::start(const vector<int> &vectorA,
 
     mainWindow.printText("CONVERTING INT TO BOOL...");
     for (size_t i = 0; i < OPERANDS_NUMBER; i++){
+        if(vectorA[i]<0){
+            vectorA[i]=abs(vectorA[i]);
+            mainWindow.printText("Error! Negative number ocured. Converting in positive.\n");
+        }
+        if(vectorB[i]<0){
+            vectorB[i]=abs(vectorB[i]);
+            mainWindow.printText("Error! Negative number ocured. Converting in positive.\n");
+        }
         boolA[i] = intToBool(vectorA[i]);
         boolB[i] = intToBool(vectorB[i]);
 
@@ -56,6 +64,8 @@ vector<int> Pipeline::start(const vector<int> &vectorA,
         curDigit.push_back(0);
     }
 
+    //TODO: Fix pojehavshaya tablica(разобраться с кол-вом тактов и прочего. Там видимо всё изза deadcell)
+    //TODO: показывать этапы
     for (size_t step = 0; step < STEPS_NUMBER; step++){
         mainWindow.printText("\n\nSTEP N" + stringify(step) + ":");
 
