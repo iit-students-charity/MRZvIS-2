@@ -6,9 +6,9 @@
  *
  * Файл реализации методов класса Pipeline.
  * Метод Pipeline::start(args) является главным методом класса, в нём заключается:
- * передача аргументов в конвеер;
- * реализация конвеерной архитектуры;
- * вывод результатов работы конвеера в MainWindow::table и MainWindow::textBox.
+ * передача аргументов в конвейер;
+ * реализация конвейерной архитектуры;
+ * вывод результатов работы конвейера в MainWindow::table и MainWindow::textBox.
  *
  * версия 1.0
  *
@@ -23,8 +23,7 @@ vector<int> Pipeline::start(vector<int> vectorA,
                             MainWindow        &mainWindow){
     const size_t OPERANDS_NUMBER = vectorA.size(),
                  STAGES_NUMBER   = 2 * DIGITS_NUMBER,
-                 RUNTIME         = 2 * DIGITS_NUMBER + OPERANDS_NUMBER,
-                 STEPS_NUMBER    = STAGES_NUMBER + OPERANDS_NUMBER;
+                 RUNTIME         = 2 * DIGITS_NUMBER + OPERANDS_NUMBER;
     size_t       operandsInLine  = 0,
                  stage           = 0;
     QString      cellText        = "";
@@ -46,11 +45,11 @@ vector<int> Pipeline::start(vector<int> vectorA,
     for (size_t i = 0; i < OPERANDS_NUMBER; i++){
         if(vectorA[i] < 0){
             vectorA[i] = abs(vectorA[i]);
-            mainWindow.printText("Error! Negative number ocured. Converting in positive.\n");
+            mainWindow.printText("Error! Negative number occured. Converting in positive.\n");
         }
         if(vectorB[i] < 0){
             vectorB[i] = abs(vectorB[i]);
-            mainWindow.printText("Error! Negative number ocured. Converting in positive.\n");
+            mainWindow.printText("Error! Negative number occured. Converting in positive.\n");
         }
         boolA[i] = intToBool(vectorA[i]);
         boolB[i] = intToBool(vectorB[i]);
@@ -164,7 +163,6 @@ vector<bool> Pipeline::intToBool(int intNum){
         binNum[i] = (intNum & 1);
         intNum  >>= 1;
     }
-
     return binNum;
 }
 
@@ -184,28 +182,24 @@ vector<bool> Pipeline::shift(const vector<bool> &operand,
     for (size_t i = shift; i < rezult.size(); i++){
         rezult[i] = operand[i - shift];
     }
-
     return rezult;
 };
 
 vector<bool> Pipeline::addition(const vector<bool> &product,
                                 vector<bool> &summand){
-    vector<bool> summ(summand.size());
+    const int    SUMM_SIZE     = 12;
+    vector<bool> summ(0);
     bool		 extraDigit    = 0;
     int			 iterationSumm = 0;
 
-    for (size_t i = 0 ; i < product.size(); i++){
+    for (size_t i = 0 ; i <= SUMM_SIZE; i++){
         if(summand.size() <= i){
             summand.push_back(0);
         }
         iterationSumm = product[i]+summand[i]+extraDigit;
         extraDigit    = (iterationSumm > 1) ? 1 : 0;
-        summ[i]       = iterationSumm % 2;
+        summ.push_back(iterationSumm % 2);
     }
-    if(extraDigit == 1){
-        summ.push_back(extraDigit);
-    }
-
     return summ;
 }
 

@@ -14,8 +14,8 @@
 
 
 MainWindow::MainWindow(QPushButton& button) {
-    const int WINDOW_WIDTH  = 1800,
-              WINDOW_HEIGHT = 900,
+    const int WINDOW_WIDTH   = 1800,
+              WINDOW_HEIGHT  = 900,
               TEXTBOX_HEIGHT = 100;
     const QString WINDOW_TITLE = "PIPELINE";
     QLabel *aLabel = new QLabel("&A = "),

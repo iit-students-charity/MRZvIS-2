@@ -37,16 +37,16 @@ void Controller::handlePipe(){
     inputASize = inputA.split(" ").size();
     inputBSize = inputB.split(" ").size();
 
-    for(int i=0; i<abs(inputASize-inputBSize); i++){
+    for(int i = 0; i < abs(inputASize - inputBSize); i++){
         if(inputASize<inputBSize){
-            inputA+=" 0";
+            inputA += " 0";
         }
         if(inputASize>inputBSize){
-            inputB+=" 0";
+            inputB += " 0";
         }
     }
 
-    for(int i = 0; i<inputASize; i++){
+    for(int i = 0; i < inputASize; i++){
         vectorA.push_back(inputA.split(" ")[i].toInt());
         vectorB.push_back(inputB.split(" ")[i].toInt());
     }
@@ -56,6 +56,6 @@ void Controller::handlePipe(){
     pipe.start(vectorA, vectorB, timeParam, *mainWindow);
 }
 
-Controller:: ~Controller(){
+Controller::~Controller(){
 
 }
