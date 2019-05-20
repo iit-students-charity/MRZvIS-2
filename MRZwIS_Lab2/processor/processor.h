@@ -1,12 +1,10 @@
-#ifndef SIMD_HEADER_H
-#define SIMD_HEADER_H
-
-#include <stdio.h> //will be removed soon
+#ifndef SIMD_PROCESSOR_H
+#define SIMD_PROCESSOR_H
 
 #define UNARY_OPERATION_NAME enum unaryOperationName
 UNARY_OPERATION_NAME
 {
-    ABSOLUTE, WAVE_UNAR_AND, WAVE_UNAR_OR
+    WAVE_UNAR_AND, WAVE_UNAR_OR
 };
 #define BINARY_OPERATION_NAME enum binaryOperationName
 BINARY_OPERATION_NAME
@@ -19,4 +17,4 @@ MATR_NAME
     A, B, C, D, E, F
 };
 
-#endif // SIMD_HEADER_H
+#endif // SIMD_PROCESSOR_H

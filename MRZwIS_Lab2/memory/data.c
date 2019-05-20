@@ -14,7 +14,9 @@
  */
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
+short **matrix;
 short **matrixA;
 short **matrixB;
 short **matrixC;
@@ -22,19 +24,28 @@ short ***matrixD;
 short **matrixE;
 short ***matrixF;
 short **matrixG;
+short lastCalculation;
 
 short **generateMatrix(x, y)
 const int x;
 const int y;
 {
-    short **matrix;
+    short **matrix = (short**)malloc(x * sizeof(short*));
+    printf("%d --- %d\n", matrix, matrix[0][0]);
+
     srand(time(NULL));
-    for(int i = 0; i < x; i++)
+
+    int i;
+    int j;
+    for(i = 0; i < x; i++)
     {
-        for(int j = 0; j < y; j++)
+        *(matrix + i) = (short*)malloc(y * sizeof(short));
+
+        for(j = 0; j < y; j++)
         {
             matrix[i][j] = rand() % 3 - 1;
         }
     }
+    printf(" %d --- %d\n", matrix, matrix[0][0]);
     return matrix;
-} const
+}
