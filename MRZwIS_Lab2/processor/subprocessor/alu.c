@@ -1,69 +1,83 @@
 #include <stdbool.h>
-#include <stdio.h>
+#include <stdio.h> //TODO: remove
 #include "..\..\memory\data.c"
 /*
  * UNARY OPERATIONS
  */
-void waveUnarAnd(operand)
-short *operand;
+void waveUnarAnd(operand, targetCell)
+short **operand;
+short *targetCell;
 {
-    lastCalculation = 1;
+    //Можно сделать увелчением последней калькуляции, а сюда передавать только на сколько увеличение делать
+    *targetCell = 1;
     int i;
-    for (i = 0; i < sizeof(operand)/sizeof(short); i++)
+    for (i = 0; i < sizeof(operand)/sizeof(short*); i++)
     {
-        lastCalculation *= operand[i];
+        *targetCell *= *(*(operand + i));
     }
 }
 
-void waveUnarOr(operand)
-short *operand;
+void waveUnarOr(operand, targetCell)
+short **operand;
+short *targetCell;
 {
-    lastCalculation = 1;
+    *targetCell = 1;
     int i;
-    for (i = 0; i < sizeof(operand)/sizeof(short); i++)
+    for (i = 0; i < sizeof(operand)/sizeof(short*); i++)
     {
-        lastCalculation *= 1 - operand[i];
+        *targetCell *= 1 - *(*(operand + i));
     }
-    lastCalculation = 1 - lastCalculation;
+    *targetCell = 1 - *targetCell;
 }
 /*
  * BINARY OPERATIONS
  */
-void substract(operand1, operand2)
+void substract(operand1, operand2, targetCell)
 const short *operand1;
 const short *operand2;
+short *targetCell;
 {
-    lastCalculation = operand1 - operand2;
+    const short op1 = *operand1;
+    const short op2 = *operand2;
+    *targetCell = op1 - op2;
 }
 
-void multiplication(operand1, operand2)
+void multiplication(operand1, operand2, targetCell)
 const short *operand1;
 const short *operand2;
+short *targetCell;
 {
-    const short op1 = operand1;
-    const short op2 = operand2;
-    lastCalculation = op1 * op2;
+    const short op1 = *operand1;
+    const short op2 = *operand2;
+    *targetCell = op1 * op2;
 }
 
-void isLess(operand1, operand2)
+void isLess(operand1, operand2, targetCell)
 const short *operand1;
 const short *operand2;
+short *targetCell;
 {
-    lastCalculation = operand1 < operand2 ? 1 : 0;
+    const short op1 = *operand1;
+    const short op2 = *operand2;
+    *targetCell = op1 < op2 ? 1 : 0;
 }
 
-void waveBinAnd(operand1, operand2)
+void waveBinAnd(operand1, operand2, targetCell)
 const short *operand1;
 const short *operand2;
+short *targetCell;
 {
-    lastCalculation = operand1 < operand2 ? operand1 : operand2;
+    const short op1 = *operand1;
+    const short op2 = *operand2;
+    *targetCell = op1 < op2 ? op1 : op2;
 }
 
-void waveImplication(operand1, operand2)
+void waveImplication(operand1, operand2, targetCell)
 const short *operand1;
 const short *operand2;
+short *targetCell;
 {
-    const short op1 = operand1;
-    const short op2 = operand2;
-    lastCalculation = (1 - op1) > op2 ? 1 - op1 : op2;
+    const short op1 = *operand1;
+    const short op2 = *operand2;
+    *targetCell = (1 - op1) > op2 ? 1 - op1 : op2;
 }

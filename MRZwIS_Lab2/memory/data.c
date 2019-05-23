@@ -14,7 +14,6 @@
  */
 #include <time.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 short **matrix;
 short **matrixA;
@@ -24,28 +23,65 @@ short ***matrixD;
 short **matrixE;
 short ***matrixF;
 short **matrixG;
-short lastCalculation;
 
-short **generateMatrix(x, y)
+void delay(int numberOfMilliSeconds) 
+{ 
+    clock_t start_time = clock();
+    while (clock() < start_time + numberOfMilliSeconds); 
+}
+
+short **generateMatrix(matrix, x, y)
+short **matrix;
 const int x;
 const int y;
 {
-    short **matrix = (short**)malloc(x * sizeof(short*));
-    printf("%d --- %d\n", matrix, matrix[0][0]);
-
+    delay(1);
     srand(time(NULL));
+
+    initSquareMatrix(matrix, x, y);
 
     int i;
     int j;
     for(i = 0; i < x; i++)
     {
-        *(matrix + i) = (short*)malloc(y * sizeof(short));
-
         for(j = 0; j < y; j++)
         {
-            matrix[i][j] = rand() % 3 - 1;
+            *(*(matrix + i) + j) = rand() % 3 - 1;
         }
     }
-    printf(" %d --- %d\n", matrix, matrix[0][0]);
     return matrix;
+}
+
+void initSquareMatrix(matrix, x, y)
+short **matrix;
+const int x;
+const int y;
+{
+    matrix = (short**)malloc(x * sizeof(short*));
+
+    int i;
+    for(i = 0; i < x; i++)
+    {
+        *(matrix + i) = (short*)malloc(y * sizeof(short));
+    }
+}
+
+void initTriDimMatrix(matrix, x, y, z)
+short ***matrix;
+const int x;
+const int y;
+const int z;
+{
+    matrix = (short***)malloc(x * sizeof(short*));
+
+    int i;
+    int j;
+    for(i = 0; i < x; i++)
+    {
+        *(matrix + i) = (short**)malloc(y * sizeof(short*));
+        for(j = 0; j < y; j++)
+        {
+            *(*(matrix + i) + j) = (short*)malloc(z * sizeof(short));
+        }
+    }
 }

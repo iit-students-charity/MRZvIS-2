@@ -4,8 +4,7 @@ Here we start and call processes.
 Внутри смих вычислений целевых матриц мжно создавать списки результатов.
 */
 #include "processor.h"
-#include "subprocessor\register.c"
-//->data.c
+#include "procBus.c"
 #include "..\iounits\inputUnit.c"
 #include "..\iounits\outputUnit.c"
 
@@ -14,11 +13,10 @@ const int p;
 const int m;
 const int q;
 {
-    //выделение памяти сюда?неееееееееееееееееееееее
-    matrixA = generateMatrix(p, m);
-    matrixB = generateMatrix(m, q);
-    matrixE = generateMatrix(1, m);
-    matrixG = generateMatrix(p, q);
+    generateMatrix(matrixA, p, m);
+    generateMatrix(matrixB, m, q);
+    generateMatrix(matrixE, 1, m);
+    generateMatrix(matrixG, p, q);
 }
 
 void calculateMatrixD(p, m, q)
@@ -26,21 +24,39 @@ const int p;
 const int m;
 const int q;
 {
-    matrixD = (short***)malloc(p * sizeof(short*));
+    initTriDimMatrix(matrixD, p, m, q);
+    iterate3Bin_SMxSM(WAVE_BIN_AND, matrixA, matrixB, p, m, q, matrixD);
+}
+
+void calculateMatrixF(p, m, q)
+const int p;
+const int m;
+const int q;
+{
+    const int SUBEXPRESSION_COUNT    = 2;
+    const int SUBSUBEXPRESSION_COUNT = 7;
+    short **subexpressionList = (short**)malloc(SUBEXPRESSION_COUNT * sizeof(short*));
+    int i;
+    for(i = 0; i < SUBEXPRESSION_COUNT; i++)
+    {
+        subexpressionList[i] = (short*)malloc(SUBSUBEXPRESSION_COUNT * sizeof(short));
+    }
+    release(i);
+
+    matrixF = (short***)malloc(p * sizeof(short*));
     int i;
     int j;
     int k;
     for(i = 0; i < p; i++)
     {
-        matrixD[i] = (short**)malloc(q * sizeof(short*));
+        matrixF[i] = (short**)malloc(q * sizeof(short*));
         for(j = 0; j < q; j++)
         {
-            matrixD[j] = (short*)malloc(k * sizeof(short));
-            for(k = 0; k < m; k)
+            matrixF[i][j] = (short*)malloc(k * sizeof(short));
+            for(k = 0; k < m; k++)
             {
-                waveBinAnd(matrixA[i][k], matrixB[k][j]);
-                matrixD[i][j][k] = lastCalculation;
-                outputShort(matrixD[i][j][k]);
+                waveImplication(&matrixA[i][k], &matrixB[k][j], &subexpressionList);
+
             }
         }
     }
@@ -74,8 +90,16 @@ void startProgram()
     inputInteger();
 
     outputString("Calculating target matrixes...\n");
+    outputString("Calculating D matrix...\n");
     calculateMatrixD(p, m, q);
-    outputString("Target matrixs successfuly calculated!\n");
+    outputString("D matrix calculated!\n");
+    outputTriDimMatrix("D", matrixD, p, m, q);
+
+    outputString("Calculating F matrix...\n");
+    calculateMatrixD(p, m, q);
+    outputString("F matrix calculated!\n");
+    outputTriDimMatrix("F", matrixF, p, m, q);
+    outputString("Target matrixes successfuly calculated!\n");
 
     outputString("Program successfuly completed!\n");
 }
