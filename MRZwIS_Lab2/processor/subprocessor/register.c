@@ -14,7 +14,7 @@ const short *targetCellPtr;
             waveUnarOr(operandPtr, targetCellPtr);
             break;
     }
-} const
+}
 
 void callBinReg(operation, operand1Ptr, operand2Ptr, targetCellPtr)
 const BINARY_OPERATION_NAME operation;
@@ -39,4 +39,4 @@ const short *targetCellPtr;
             waveImplication(operand1Ptr, operand2Ptr, targetCellPtr);
             break;
     }
-} const
+}

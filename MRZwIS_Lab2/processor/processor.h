@@ -1,6 +1,8 @@
 #ifndef SIMD_PROCESSOR_H
 #define SIMD_PROCESSOR_H
 
+int subprocCount = 4;
+
 #define UNARY_OPERATION_NAME enum unaryOperationName
 UNARY_OPERATION_NAME
 {

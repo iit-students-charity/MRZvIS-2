@@ -13,10 +13,10 @@ const int p;
 const int m;
 const int q;
 {
-    generateMatrix(matrixA, p, m);
-    generateMatrix(matrixB, m, q);
-    generateMatrix(matrixE, 1, m);
-    generateMatrix(matrixG, p, q);
+    generateMatrix(&matrixA, p, m);
+    generateMatrix(&matrixB, m, q);
+    generateMatrix(&matrixE, 1, m);
+    generateMatrix(&matrixG, p, q);
 }
 
 void calculateMatrixD(p, m, q)
@@ -24,8 +24,8 @@ const int p;
 const int m;
 const int q;
 {
-    initTriDimMatrix(matrixD, p, m, q);
-    iterate3Bin_SMxSM(WAVE_BIN_AND, matrixA, matrixB, p, m, q, matrixD);
+    initTriDimMatrix(&matrixD, p, m, q);
+    iterate3Bin_SMxSM(WAVE_BIN_AND, &matrixA, &matrixB, p, m, q, &matrixD);
 }
 
 void calculateMatrixF(p, m, q)
@@ -33,33 +33,21 @@ const int p;
 const int m;
 const int q;
 {
-    const int SUBEXPRESSION_COUNT    = 2;
-    const int SUBSUBEXPRESSION_COUNT = 7;
-    short **subexpressionList = (short**)malloc(SUBEXPRESSION_COUNT * sizeof(short*));
-    int i;
-    for(i = 0; i < SUBEXPRESSION_COUNT; i++)
-    {
-        subexpressionList[i] = (short*)malloc(SUBSUBEXPRESSION_COUNT * sizeof(short));
-    }
-    release(i);
+    const int SUBEXPRESSION_LEVELS_COUNT = 3;
 
-    matrixF = (short***)malloc(p * sizeof(short*));
-    int i;
-    int j;
-    int k;
-    for(i = 0; i < p; i++)
-    {
-        matrixF[i] = (short**)malloc(q * sizeof(short*));
-        for(j = 0; j < q; j++)
-        {
-            matrixF[i][j] = (short*)malloc(k * sizeof(short));
-            for(k = 0; k < m; k++)
-            {
-                waveImplication(&matrixA[i][k], &matrixB[k][j], &subexpressionList);
+    initTriDimMatrix(&matrixF, p, m, q);
+    initFourDimMatrix(TDBuffer, SUBEXPRESSION_LEVELS_COUNT, p, m, q);
 
-            }
-        }
-    }
+    iterate3Bin_SMxSM(WAVE_IMPLICATION, &matrixA, &matrixB, p, m, q, &TDBuffer[1]);
+    iterate3Bin_UMxD(MULTIPLICATION, &matrixE[1], 2, p, m, q, &TDBuffer[2]);
+    iterate3Bin_UMxD(SUBSTRACT, &TDBuffer[2][1][1], 1, p, m, q, &TDBuffer[2]);
+    iterate3Bin_TDMxTDM(MULTIPLICATION, &TDBuffer[1], &TDBuffer[2], p, m, q, &TDBuffer[1]);
+    iterate3Bin_TDMxUM(MULTIPLICATION, &TDBuffer[1], &matrixE[1], p, m, q, &TDBuffer[1]);
+    TDBuffer[0] = TDBuffer[1];
+    iterate3Bin_SMxSM(WAVE_IMPLICATION, &matrixB, &matrixA, p, m, q, &TDBuffer[1]);
+    iterate3Bin_SMxSM(WAVE_IMPLICATION, &matrixA, &matrixB, p, m, q, &TDBuffer[2]);
+    iterate3Bin_TDMxD(MULTIPLICATION, &TDBuffer[2], 4, p, m, q, &TDBuffer[2]);
+    matrixF = TDBuffer[0];
 }
 
 void startProgram()
@@ -67,7 +55,7 @@ void startProgram()
     outputString("Welcome in SIMDSysSim!\n");
 
     outputString("Input subprocessor count: ");
-    int subprocCount = inputInteger();
+    subprocCount = inputInteger();
 
     outputString("Starting a program...\n");
 
@@ -81,24 +69,29 @@ void startProgram()
     outputString("Generating initial matrixes...\n");
     generateInitialMatrixes(p, m, q);
     outputString("Initial matrixes successfuly generated!\n");
-    outputSquareMatrix("A", matrixA, p, m);
-    outputSquareMatrix("B", matrixB, m, q);
-    outputSquareMatrix("E", matrixE, 1, m);
-    outputSquareMatrix("G", matrixG, p, q);
 
-    outputString("Would you like to start target matrixes calculation?(input anything to agree)");
-    inputInteger();
+    outputSquareMatrix("A", &matrixA, p, m);
+    outputSquareMatrix("B", &matrixB, m, q);
+    outputSquareMatrix("E", &matrixE, 1, m);
+    outputSquareMatrix("G", &matrixG, p, q);
 
     outputString("Calculating target matrixes...\n");
+
+    outputString("Would you like to calculate D matrix?(input anything to agree)");
+    inputInteger();
+
     outputString("Calculating D matrix...\n");
     calculateMatrixD(p, m, q);
     outputString("D matrix calculated!\n");
-    outputTriDimMatrix("D", matrixD, p, m, q);
+    outputTriDimMatrix("D", &matrixD, p, m, q);
+
+    outputString("Would you like to calculate F matrix?(input anything to agree)");
+    inputInteger();
 
     outputString("Calculating F matrix...\n");
-    calculateMatrixD(p, m, q);
+    calculateMatrixF(p, m, q);
     outputString("F matrix calculated!\n");
-    outputTriDimMatrix("F", matrixF, p, m, q);
+    outputTriDimMatrix("F", &matrixF, p, m, q);
     outputString("Target matrixes successfuly calculated!\n");
 
     outputString("Program successfuly completed!\n");

@@ -14,8 +14,8 @@
  */
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-short **matrix;
 short **matrixA;
 short **matrixB;
 short **matrixC;
@@ -23,6 +23,69 @@ short ***matrixD;
 short **matrixE;
 short ***matrixF;
 short **matrixG;
+short ****TDBuffer;
+short ***SBuffer;
+
+void initSquareMatrix(matrix, x, y)
+short ***matrix;
+const int x;
+const int y;
+{
+    *matrix = (short**)malloc(x * sizeof(short*));
+
+    int i;
+    int j;
+    for(i = 0; i < x; i++)
+    {
+        *(*matrix + i) = (short*)malloc(y * sizeof(short));
+    }
+}
+
+void initTriDimMatrix(matrix, x, y, z)
+short ****matrix;
+const int x;
+const int y;
+const int z;
+{
+    *matrix = (short***)malloc(x * sizeof(short*));
+
+    int i;
+    int j;
+    for(i = 0; i < x; i++)
+    {
+        *(*matrix + i) = (short**)malloc(y * sizeof(short*));
+        for(j = 0; j < y; j++)
+        {
+            *(*(*matrix + i) + j) = (short*)malloc(z * sizeof(short));
+        }
+    }
+}
+
+void initFourDimMatrix(matrix, x, y, z, v)
+short *****matrix;
+const int x;
+const int y;
+const int z;
+const int v;
+{
+    *matrix = (short****)malloc(x * sizeof(short*));
+
+    int i;
+    int j;
+    int k;
+    for(i = 0; i < x; i++)
+    {
+        *(*matrix + i) = (short***)malloc(y * sizeof(short*));
+        for(j = 0; j < y; j++)
+        {
+            *(*(*matrix + i) + j) = (short**)malloc(z * sizeof(short));
+            for(k = 0; k < z; k++)
+            {
+                *(*(*(*matrix + i) + j) + k) = (short*)malloc(v * sizeof(short));
+            }
+        }
+    }
+}
 
 void delay(int numberOfMilliSeconds) 
 { 
@@ -30,58 +93,23 @@ void delay(int numberOfMilliSeconds)
     while (clock() < start_time + numberOfMilliSeconds); 
 }
 
-short **generateMatrix(matrix, x, y)
-short **matrix;
+void generateMatrix(matrix, x, y)
+short*** matrix;
 const int x;
 const int y;
 {
+    initSquareMatrix(matrix, x, y);
+
     delay(1);
     srand(time(NULL));
 
-    initSquareMatrix(matrix, x, y);
-
     int i;
     int j;
     for(i = 0; i < x; i++)
     {
         for(j = 0; j < y; j++)
         {
-            *(*(matrix + i) + j) = rand() % 3 - 1;
-        }
-    }
-    return matrix;
-}
-
-void initSquareMatrix(matrix, x, y)
-short **matrix;
-const int x;
-const int y;
-{
-    matrix = (short**)malloc(x * sizeof(short*));
-
-    int i;
-    for(i = 0; i < x; i++)
-    {
-        *(matrix + i) = (short*)malloc(y * sizeof(short));
-    }
-}
-
-void initTriDimMatrix(matrix, x, y, z)
-short ***matrix;
-const int x;
-const int y;
-const int z;
-{
-    matrix = (short***)malloc(x * sizeof(short*));
-
-    int i;
-    int j;
-    for(i = 0; i < x; i++)
-    {
-        *(matrix + i) = (short**)malloc(y * sizeof(short*));
-        for(j = 0; j < y; j++)
-        {
-            *(*(matrix + i) + j) = (short*)malloc(z * sizeof(short));
+            *(*(*matrix + i) + j) = rand() % 3 - 1;
         }
     }
 }
