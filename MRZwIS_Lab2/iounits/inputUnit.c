@@ -1,3 +1,6 @@
+#ifndef SIMD_INPUT_UNIT_C
+#define SIMD_INPUT_UNIT_C
+
 #include "io.h"
 
 int inputInteger()
@@ -6,3 +9,5 @@ int inputInteger()
     scanf("%d", &integer);
     return integer;
 }
+
+#endif //SIMD_INPUT_UNIT_C

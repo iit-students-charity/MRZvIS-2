@@ -1,16 +1,19 @@
+#ifndef SIMD_OUTPUT_UNIT_C
+#define SIMD_OUTPUT_UNIT_C
+
 #include "io.h"
 
 void outputString(string)
 const char* string;
 {
     printf(string);
-} const
+}
 
 void outputShort(number)
 const short* number;
 {
     printf("%d", number);
-} const
+}
 
 void outputSquareMatrix(matrixName, matrix, x, y)
 const char* matrixName;
@@ -25,11 +28,11 @@ const int y;
     {
         for (j = 0; j < y; j++)
         {
-            printf("%s[%d][%d] = %d; \t", matrixName, i, j, *(*(*matrix + i) + j));
+            printf("%s[%d][%d] = %d;     \t\t", matrixName, i, j, *(*(*matrix + i) + j));
         }
         printf("\n");
     }
-} const
+}
 
 void outputTriDimMatrix(matrixName, matrix, x, y, z)
 const char* matrixName;
@@ -54,4 +57,6 @@ const int z;
         }
         printf("\n");
     }
-} const
+}
+
+#endif //SIMD_OUTPUT_UNIT_C
