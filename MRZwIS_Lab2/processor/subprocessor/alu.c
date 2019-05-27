@@ -13,6 +13,7 @@
  *
  *******************************************************************************************/
 #include <stdbool.h>
+#include <stdio.h>
 #include "..\..\memory\data.c"
 
 void waveUnarAnd(operand, iterationNum, targetCell)
@@ -25,6 +26,7 @@ short* targetCell;
     for (i = 0; i < *iterationNum; i++)
     {
         *targetCell *= *(*operand + i);
+        runTime += multiplicationTime;
     }
 }
 
@@ -38,6 +40,7 @@ short* targetCell;
     for (i = 0; i < *iterationNum; i++)
     {
         *targetCell *= 1 - *(*operand + i);
+        runTime += multiplicationTime + substractionTime;
     }
     *targetCell = 1 - *targetCell;
 }
@@ -50,6 +53,7 @@ short* targetCell;
     const short op1 = *operand1;
     const short op2 = *operand2;
     *targetCell = op1 + op2;
+    runTime += additionTime;
 }
 
 void substract(operand1, operand2, targetCell)
@@ -60,6 +64,7 @@ short* targetCell;
     const short op1 = *operand1;
     const short op2 = *operand2;
     *targetCell = op1 - op2;
+    runTime += substractionTime;
 }
 
 void multiplication(operand1, operand2, targetCell)
@@ -70,6 +75,7 @@ short* targetCell;
     const short op1 = *operand1;
     const short op2 = *operand2;
     *targetCell = op1 * op2;
+    runTime += multiplicationTime;
 }
 
 void isLess(operand1, operand2, targetCell)
@@ -79,7 +85,8 @@ short* targetCell;
 {
     const short op1 = *operand1;
     const short op2 = *operand2;
-    *targetCell = op1 < op2 ? 1 : 0;
+    *targetCell = (op1 < op2) ? 1 : 0;
+    runTime += comparationTime;
 }
 
 void waveBinAnd(operand1, operand2, targetCell)
@@ -89,7 +96,8 @@ short* targetCell;
 {
     const short op1 = *operand1;
     const short op2 = *operand2;
-    *targetCell = op1 < op2 ? op1 : op2;
+    *targetCell = (op1 < op2) ? op1 : op2;
+    runTime += comparationTime;
 }
 
 void waveImplication(operand1, operand2, targetCell)
@@ -99,5 +107,6 @@ short* targetCell;
 {
     const short op1 = *operand1;
     const short op2 = *operand2;
-    *targetCell = (1 - op1) > op2 ? 1 - op1 : op2;
+    *targetCell = ((1 - op1) > op2) ? (1 - op1) : op2;
+    runTime += comparationTime + substractionTime;
 }

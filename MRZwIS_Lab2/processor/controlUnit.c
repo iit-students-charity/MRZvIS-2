@@ -52,7 +52,7 @@ const int m;
     iterate_UMxD_TDM(    SUBSTRACT,        &TDBuffer[2][1][1], 1,            p, q, m, &TDBuffer[2]);
     iterate_TDMxTDM_TDM( MULTIPLICATION,   &TDBuffer[1],       &TDBuffer[2], p, q, m, &TDBuffer[1]);
     iterate_TDMxUM_TDM(  MULTIPLICATION,   &TDBuffer[1],       &matrixE[0],  p, q, m, &TDBuffer[1]);
-    TDBuffer[0] = TDBuffer[1];
+    eqTriDimMatr(&TDBuffer[0], &TDBuffer[1], p, q, m);
     iterate_WI_SMxSM_TDM(WAVE_IMPLICATION, &matrixB,           &matrixA,     p, q, m, &TDBuffer[1]);
     iterate_W_SMxSM_TDM( WAVE_IMPLICATION, &matrixA,           &matrixB,     p, q, m, &TDBuffer[2]);
     iterate_TDMxD_TDM(   MULTIPLICATION,   &TDBuffer[2],       4,            p, q, m, &TDBuffer[2]);
@@ -64,7 +64,10 @@ const int m;
     iterate_TDMxTDM_TDM( MULTIPLICATION,   &TDBuffer[1],       &TDBuffer[2], p, q, m, &TDBuffer[1]);
     iterate_TDMxTDM_TDM( ADDITION,         &TDBuffer[0],       &TDBuffer[1], p, q, m, &TDBuffer[0]);
 
-    matrixF = TDBuffer[0];
+    free(TDBuffer[1]);
+    free(TDBuffer[2]);
+    eqTriDimMatr(&matrixF, &TDBuffer[0], p, q, m);
+    free(TDBuffer[0]);
 }
 
 void calculateMatrixC(p, q, m)
@@ -79,9 +82,10 @@ const int m;
 
     iterate_IUNAR_TDM_SM(WAVE_UNAR_AND,  &matrixF,    m,           p, q, &SBuffer[1]);
     iterate_SMxD_SM(     MULTIPLICATION, &matrixG,    3,           p, q, &SBuffer[2]);
+    iterate_SMxD_SM(     SUBSTRACT,      &SBuffer[2], 2,           p, q, &SBuffer[2]);
     iterate_SMxSM_SM(    MULTIPLICATION, &SBuffer[1], &SBuffer[2], p, q, &SBuffer[1]);
     iterate_SMxSM_SM(    MULTIPLICATION, &SBuffer[1], &matrixG,    p, q, &SBuffer[1]);
-    SBuffer[0] = SBuffer[1];
+    eqSqMatr(&SBuffer[0], &SBuffer[1], p, q);
     iterate_IUNAR_TDM_SM(WAVE_UNAR_AND,  &matrixD,    m,           p, q, &SBuffer[1]);
     iterate_IUNAR_TDM_SM(WAVE_UNAR_AND,  &matrixF,    m,           p, q, &SBuffer[2]);
     iterate_IUNAR_TDM_SM(WAVE_UNAR_AND,  &matrixD,    m,           p, q, &SBuffer[3]);
@@ -96,11 +100,23 @@ const int m;
     iterate_SMxSM_SM(    MULTIPLICATION, &SBuffer[1], &SBuffer[2], p, q, &SBuffer[1]);
     iterate_SMxSM_SM(    ADDITION,       &SBuffer[0], &SBuffer[1], p, q, &SBuffer[0]);
 
-    matrixC = SBuffer[0];
+    free(SBuffer[1]);
+    free(SBuffer[2]);
+    free(SBuffer[3]);
+    eqSqMatr(&matrixC, &SBuffer[0], p, q);
+    free(SBuffer[0]);
 }
 
 void startProgram()
 {
+    outputString("Input addition calculation time: ");
+    additionTime = inputInteger();
+    outputString("Input substraction calculation time: ");
+    substractionTime = inputInteger();
+    outputString("Input multiplication calculation time: ");
+    multiplicationTime = inputInteger();
+    outputString("Input comparation calculation time: ");
+    comparationTime = inputInteger();
     outputString("Input p: ");
     int p = inputInteger();
     outputString("Input q: ");
@@ -162,7 +178,22 @@ void startProgram()
         outputSquareMatrix("C", &matrixC, p, q);
     }
     outputString("Target matrixes successfuly calculated!\n");
+
+    subprocessorRunTime = runTime / subprocCount;
+    if(runTime % subprocCount > 0)
+    {
+        subprocessorRunTime++;
+    }
+
+    outputString("Run time t = %d\n", subprocessorRunTime);
     outputString("Program successfuly completed!\n");
     outputString("Would you like to exit the program?(input anything to agree)");
+    free(matrixA);
+    free(matrixB);
+    free(matrixC);
+    free(matrixD);
+    free(matrixE);
+    free(matrixF);
+    free(matrixG);
     inputInteger();
 }

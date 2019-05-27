@@ -232,7 +232,7 @@ const short*** targetSM;
     {
         for(j = 0; j < y; j++)
         {
-            callReg(operation, &(*TDM)[i][j], &digit, &(*targetSM)[i][j]);
+            callUnarReg(operation, &(*TDM)[i][j], &digit, &(*targetSM)[i][j]);
             currentSubproc = switchSubproc(&currentSubproc);
         }
     }

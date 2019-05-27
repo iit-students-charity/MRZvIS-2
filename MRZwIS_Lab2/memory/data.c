@@ -13,6 +13,12 @@
 #include <time.h>
 #include <stdlib.h>
 
+int runTime;
+int subprocessorRunTime;
+int additionTime;
+int substractionTime;
+int multiplicationTime;
+int comparationTime;
 short** matrixA;
 short** matrixB;
 short** matrixC;
@@ -107,6 +113,45 @@ const int y;
         for(j = 0; j < y; j++)
         {
             *(*(*matrix + i) + j) = rand() % 3 - 1;
+        }
+    }
+}
+
+void eqTriDimMatr(matrix1, matrix2, x, y, z)
+short**** matrix1;
+short**** matrix2;
+const short x;
+const short y;
+const short z;
+{
+    int i;
+    int j;
+    int k;
+    for(i = 0; i < x; i++)
+    {
+        for(j = 0; j < y; j++)
+        {
+            for(k = 0; k < z; k++)
+            {
+                *(*(*(*matrix1 + i) + j) + k) = *(*(*(*matrix2 + i) + j) + k);
+            }
+        }
+    }
+}
+
+void eqSqMatr(matrix1, matrix2, x, y)
+short*** matrix1;
+short*** matrix2;
+const short x;
+const short y;
+{
+    int i;
+    int j;
+    for(i = 0; i < x; i++)
+    {
+        for(j = 0; j < y; j++)
+        {
+            *(*(*matrix1 + i) + j) = *(*(*matrix2 + i) + j);
         }
     }
 }
