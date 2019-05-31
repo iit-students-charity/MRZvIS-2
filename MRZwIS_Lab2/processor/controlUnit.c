@@ -49,7 +49,7 @@ const int m;
 
     iterate_W_SMxSM_TDM( WAVE_IMPLICATION, &matrixA,           &matrixB,     p, q, m, &TDBuffer[1]);
     iterate_UMxD_TDM(    MULTIPLICATION,   &matrixE[0],        2,            p, q, m, &TDBuffer[2]);
-    iterate_UMxD_TDM(    SUBSTRACT,        &TDBuffer[2][1][1], 1,            p, q, m, &TDBuffer[2]);
+    iterate_UMxD_TDM(    SUBSTRACT,        &TDBuffer[2][0][0], 1,            p, q, m, &TDBuffer[2]);
     iterate_TDMxTDM_TDM( MULTIPLICATION,   &TDBuffer[1],       &TDBuffer[2], p, q, m, &TDBuffer[1]);
     iterate_TDMxUM_TDM(  MULTIPLICATION,   &TDBuffer[1],       &matrixE[0],  p, q, m, &TDBuffer[1]);
     eqTriDimMatr(&TDBuffer[0], &TDBuffer[1], p, q, m);
