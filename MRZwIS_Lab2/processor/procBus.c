@@ -29,6 +29,8 @@ const int* current;
 void updateTimes(operation)
 const OPERATION_NAME operation;
 {
+    int lsum;
+    int lavg;
     runTime += stageTime;
     subprocessorRunTime += stageTime / subprocCount;
     if(stageTime % subprocCount != 0)
@@ -38,33 +40,45 @@ const OPERATION_NAME operation;
     switch (operation)
     {
     case ADDITION:
-        Lsum += additionTime * 3;
-        Lavg += additionTime * (3 * p * q * m + p * m + m * q + 1);
+        lsum = additionTime * 3;
+        lavg = additionTime * (3 * p * q * m + p * m + m * q + 1);
         break;
     case SUBSTRACT:
-        Lsum += substractionTime * 6;
-        Lavg += substractionTime * (p * q * m + 2 * p * q + p * m + q * m + 2 * m + 5);
+        lsum = substractionTime * 6;
+        lavg = substractionTime * (p * q * m + 2 * p * q + p * m + q * m + 2 * m + 5);
         break;
     case MULTIPLICATION:
-        Lsum += multiplicationTime * 6;
-        Lavg += multiplicationTime * (4 * p * q * m + p * q + p * m + m * q + 2 * m + 3);
+        lsum = multiplicationTime * 6;
+        lavg = multiplicationTime * (4 * p * q * m + p * q + p * m + m * q + 2 * m + 3);
         break;
     case WAVE_BIN_AND:
-        Lsum += comparationTime;
-        Lavg += comparationTime * (p * m + m * q);
+        lsum = comparationTime;
+        lavg = comparationTime * (p * m + m * q);
         break;
     case WAVE_IMPLICATION:
-        Lsum += comparationTime + substractionTime;
-        Lavg += (comparationTime + substractionTime) * (p * m + m * q);
+        lsum = comparationTime + substractionTime;
+        lavg = (comparationTime + substractionTime) * (p * m + m * q);
         break;
     default:
         break;
+    }
+    Lsum += lsum / subprocCount;
+    if(lsum % subprocCount != 0)
+    {
+        Lsum++;
+    }
+    Lavg += lavg / subprocCount;
+    if(lavg % subprocCount != 0)
+    {
+        Lavg++;
     }
 }
 
 void iUpdateTimes(operation)
 const IUNAR_OPERATION_NAME operation;
 {
+    int lsum;
+    int lavg;
     runTime += stageTime;
     subprocessorRunTime += stageTime / subprocCount;
     if(stageTime % subprocCount != 0)
@@ -74,15 +88,25 @@ const IUNAR_OPERATION_NAME operation;
     switch (operation)
     {
     case WAVE_UNAR_AND:
-        Lsum += multiplicationTime;
-        Lavg += multiplicationTime * (p * q * m);
+        lsum = multiplicationTime;
+        lavg = multiplicationTime * (p * q * m);
         break;
     case WAVE_UNAR_OR:
-        Lsum += (multiplicationTime + substractionTime) + substractionTime;
-        Lavg += ((multiplicationTime + substractionTime) * m + substractionTime) * p * q;
+        lsum = (multiplicationTime + substractionTime) + substractionTime;
+        lavg = ((multiplicationTime + substractionTime) * m + substractionTime) * p * q;
         break;
     default:
         break;
+    }
+    Lsum += lsum / subprocCount;
+    if(lsum % subprocCount != 0)
+    {
+        Lsum++;
+    }
+    Lavg += lavg / subprocCount;
+    if(lavg % subprocCount != 0)
+    {
+        Lavg++;
     }
 }
 
