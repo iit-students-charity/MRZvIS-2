@@ -118,11 +118,11 @@ void startProgram()
     outputString("Input comparation calculation time: ");
     comparationTime = inputInteger();
     outputString("Input p: ");
-    int p = inputInteger();
+    p = inputInteger();
     outputString("Input q: ");
-    int q = inputInteger();
+    q = inputInteger();
     outputString("Input m: ");
-    int m = inputInteger();
+    m = inputInteger();
     outputString("Generating initial matrixes...\n");
 
     generateInitialMatrixes(p, q, m);
@@ -179,14 +179,17 @@ void startProgram()
     }
     outputString("Target matrixes successfuly calculated!\n");
 
-    subprocessorRunTime = runTime / subprocCount;
-    if(runTime % subprocCount > 0)
-    {
-        subprocessorRunTime++;
-    }
+    Lavg = Lavg / (m * (p + q + 1) + p * q);
 
-    outputString("Run time t = %d\n", subprocessorRunTime);
-    outputString("Program successfuly completed!\n");
+    outputString("Rang r = %d\n", (m * (p + q + 1) + p * q));
+    outputString("Subprocessor count n = %d\n", subprocCount);
+    outputString("Linear run time T1 = %d\n", runTime);
+    outputString("Paralel run time Tn = %d\n", subprocessorRunTime);
+    outputString("Acceleration coefficient Ky = %d,%d\n", runTime / subprocessorRunTime, runTime % subprocessorRunTime);
+    outputString("Effectiveness e = %d,%d\n", runTime / (subprocessorRunTime * subprocCount), runTime % (subprocessorRunTime * subprocCount));
+    outputString("Summar operation length Lsum = %d\n", Lsum);
+    outputString("Average operation length Lavg = %d\n", Lavg);
+    outputString("Divergence coefficient D = %d,%d\n", Lsum / Lavg, Lsum % Lavg);
     outputString("Would you like to exit the program?(input anything to agree)");
     free(matrixA);
     free(matrixB);

@@ -13,12 +13,18 @@
 #include <time.h>
 #include <stdlib.h>
 
-int runTime;
-int subprocessorRunTime;
+int runTime = 0;
+int subprocessorRunTime = 0;
+int stageTime = 0;
+int Lsum = 0;
+int Lavg = 0;
 int additionTime;
 int substractionTime;
 int multiplicationTime;
 int comparationTime;
+int p;
+int q;
+int m;
 short** matrixA;
 short** matrixB;
 short** matrixC;
