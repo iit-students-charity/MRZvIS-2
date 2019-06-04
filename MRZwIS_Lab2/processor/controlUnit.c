@@ -64,10 +64,8 @@ const int m;
     iterate_TDMxTDM_TDM( MULTIPLICATION,   &TDBuffer[1],       &TDBuffer[2], p, q, m, &TDBuffer[1]);
     iterate_TDMxTDM_TDM( ADDITION,         &TDBuffer[0],       &TDBuffer[1], p, q, m, &TDBuffer[0]);
 
-    free(TDBuffer[1]);
-    free(TDBuffer[2]);
     eqTriDimMatr(&matrixF, &TDBuffer[0], p, q, m);
-    free(TDBuffer[0]);
+    freeFourDimMatrix(&TDBuffer, SUBEXPRESSION_LEVELS_COUNT, p, q, m);
 }
 
 void calculateMatrixC(p, q, m)
@@ -100,15 +98,14 @@ const int m;
     iterate_SMxSM_SM(    MULTIPLICATION, &SBuffer[1], &SBuffer[2], p, q, &SBuffer[1]);
     iterate_SMxSM_SM(    ADDITION,       &SBuffer[0], &SBuffer[1], p, q, &SBuffer[0]);
 
-    free(SBuffer[1]);
-    free(SBuffer[2]);
-    free(SBuffer[3]);
     eqSqMatr(&matrixC, &SBuffer[0], p, q);
-    free(SBuffer[0]);
+    freeTriDimMatrix(&SBuffer, SUBEXPRESSION_LEVELS_COUNT, p, q);
 }
 
 void startProgram()
 {
+    int jjj = 4000;
+    printf("x = %f \n", jjj / (float)subprocCount);
     outputString("Input addition calculation time: ");
     additionTime = inputInteger();
     outputString("Input substraction calculation time: ");
@@ -138,8 +135,6 @@ void startProgram()
         outputSquareMatrix("G", &matrixG, p, q);
     }
     outputString("Calculating target matrixes...\n");
-    outputString("Would you like to calculate D matrix?(input anything to agree)");
-    inputInteger();
     outputString("Calculating D matrix...\n");
 
     calculateMatrixD(p, q, m);
@@ -151,11 +146,12 @@ void startProgram()
     {
         outputTriDimMatrix("D", &matrixD, p, q, m);
     }
-    outputString("Would you like to calculate F matrix?(input anything to agree)");
-    inputInteger();
     outputString("Calculating F matrix...\n");
 
     calculateMatrixF(p, q, m);
+    freeSquareMatrix(&matrixA, p, m);
+    freeSquareMatrix(&matrixB, m, q);
+    freeSquareMatrix(&matrixE, 1, m);
 
     outputString("F matrix calculated!\n");
     outputString("Would you like to print it?(1 - yes, 0 - no)\n");
@@ -164,11 +160,12 @@ void startProgram()
     {
         outputTriDimMatrix("F", &matrixF, p, q, m);
     }
-    outputString("Would you like to calculate C matrix?(input anything to agree)");
-    inputInteger();
     outputString("Calculating C matrix...\n");
 
     calculateMatrixC(p, q, m);
+    freeSquareMatrix(&matrixG, p, q);
+    freeTriDimMatrix(&matrixF, p, q, m);
+    freeTriDimMatrix(&matrixD, p, q, m);
 
     outputString("C matrix calculated!\n");
     outputString("Would you like to print it?(1 - yes, 0 - no)\n");
@@ -177,26 +174,22 @@ void startProgram()
     {
         outputSquareMatrix("C", &matrixC, p, q);
     }
-    outputString("Target matrixes successfuly calculated!\n");
+    outputString("Target matrixes are successfuly calculated!\n");
 
-    Lavg = Lavg / (m * (p + q + 1) + p * q);
+    Lavg = ceil((float)Lavg / (m * (p + q + 1) + p * q));
 
-    outputString("Rang r = %d\n", (m * (p + q + 1) + p * q));
-    outputString("Subprocessor count n = %d\n", subprocCount);
-    outputString("Linear run time T1 = %d\n", runTime);
-    outputString("Paralel run time Tn = %d\n", subprocessorRunTime);
-    outputString("Acceleration coefficient Ky = %d,%d\n", runTime / subprocessorRunTime, runTime % subprocessorRunTime);
-    outputString("Effectiveness e = %d,%d\n", runTime / (subprocessorRunTime * subprocCount), runTime % (subprocessorRunTime * subprocCount));
-    outputString("Summar operation length Lsum = %d\n", Lsum);
-    outputString("Average operation length Lavg = %d\n", Lavg);
-    outputString("Divergence coefficient D = %d,%d\n", Lsum / Lavg, Lsum % Lavg);
-    outputString("Would you like to exit the program?(input anything to agree)");
-    free(matrixA);
-    free(matrixB);
-    free(matrixC);
-    free(matrixD);
-    free(matrixE);
-    free(matrixF);
-    free(matrixG);
+    printf("\nModel metrics:\n");
+    printf("Rang_____________________r  = %d\n", (m * (p + q + 1) + p * q));
+    printf("Subprocessor count_______n  = %d\n", subprocCount);
+    printf("Linear run time__________T1 = %d\n", runTime);
+    printf("Paralel run time_________Tn = %d\n", subprocessorRunTime);
+    printf("Acceleration coefficient_Ky = %f\n", runTime / (float)subprocessorRunTime);
+    printf("Effectiveness____________e  = %f\n", runTime / (float)(subprocessorRunTime * subprocCount));
+    printf("Summar operation length__Lsum = %d\n", Lsum);
+    printf("Average operation length_Lavg = %d\n", Lavg);
+    printf("Divergence coefficient___D = %f\n", Lsum / (float)Lavg);
+    printf("\nWould you like to exit the program?(input anything to agree)");
+    
+    freeSquareMatrix(&matrixC, p, q);
     inputInteger();
 }

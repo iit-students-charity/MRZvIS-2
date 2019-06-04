@@ -13,11 +13,11 @@
 #include <time.h>
 #include <stdlib.h>
 
-int runTime = 0;
-int subprocessorRunTime = 0;
-int stageTime = 0;
-int Lsum = 0;
-int Lavg = 0;
+int runTime;
+int subprocessorRunTime;
+int stageTime;
+int Lsum;
+int Lavg;
 int additionTime;
 int substractionTime;
 int multiplicationTime;
@@ -94,6 +94,64 @@ const int z;
             }
         }
     }
+}
+
+void freeSquareMatrix(matrix, x, y)
+short*** matrix;
+const int x;
+const int y;
+{
+    int i;
+    int j;
+    for(i = 0; i < x; i++)
+    {
+        free(*(*matrix + i));
+    }
+    free(*matrix);
+}
+
+void freeTriDimMatrix(matrix, x, y, z)
+short**** matrix;
+const int x;
+const int y;
+const int z;
+{
+    int i;
+    int j;
+    for(i = 0; i < x; i++)
+    {
+        for(j = 0; j < y; j++)
+        {
+            free(*(*(*matrix + i) + j));
+        }
+        free(*(*matrix + i));
+    }
+    free(*matrix);
+}
+
+void freeFourDimMatrix(matrix, v, x, y, z)
+short***** matrix;
+const int v;
+const int x;
+const int y;
+const int z;
+{
+    int i;
+    int j;
+    int k;
+    for(i = 0; i < v; i++)
+    {
+        for(j = 0; j < x; j++)
+        {
+            for(k = 0; k < y; k++)
+            {
+                free(*(*(*(*matrix + i) + j) + k));
+            }
+            free(*(*(*matrix + i) + j));
+        }
+        free(*(*matrix + i));
+    }
+    free(*matrix);
 }
 
 void delay(int numberOfMilliSeconds) 

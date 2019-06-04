@@ -10,6 +10,7 @@
  * версия 1.0
  *
  *******************************************************************************************/
+#include <math.h>
 #include "subprocessor\register.c"
 #include "processor.h"
 
@@ -26,88 +27,15 @@ const int* current;
     }
 }
 
-void updateTimes(operation)
-const OPERATION_NAME operation;
+void updateTimes(r_ksk)
+int r_ksk;
 {
-    int lsum;
-    int lavg;
+    int l_ksk;
     runTime += stageTime;
-    subprocessorRunTime += stageTime / subprocCount;
-    if(stageTime % subprocCount != 0)
-    {
-        subprocessorRunTime++;
-    }
-    switch (operation)
-    {
-    case ADDITION:
-        lsum = additionTime * 3;
-        lavg = additionTime * (3 * p * q * m + p * m + m * q + 1);
-        break;
-    case SUBSTRACT:
-        lsum = substractionTime * 6;
-        lavg = substractionTime * (p * q * m + 2 * p * q + p * m + q * m + 2 * m + 5);
-        break;
-    case MULTIPLICATION:
-        lsum = multiplicationTime * 6;
-        lavg = multiplicationTime * (4 * p * q * m + p * q + p * m + m * q + 2 * m + 3);
-        break;
-    case WAVE_BIN_AND:
-        lsum = comparationTime;
-        lavg = comparationTime * (p * m + m * q);
-        break;
-    case WAVE_IMPLICATION:
-        lsum = comparationTime + substractionTime;
-        lavg = (comparationTime + substractionTime) * (p * m + m * q);
-        break;
-    default:
-        break;
-    }
-    Lsum += lsum / subprocCount;
-    if(lsum % subprocCount != 0)
-    {
-        Lsum++;
-    }
-    Lavg += lavg / subprocCount;
-    if(lavg % subprocCount != 0)
-    {
-        Lavg++;
-    }
-}
-
-void iUpdateTimes(operation)
-const IUNAR_OPERATION_NAME operation;
-{
-    int lsum;
-    int lavg;
-    runTime += stageTime;
-    subprocessorRunTime += stageTime / subprocCount;
-    if(stageTime % subprocCount != 0)
-    {
-        subprocessorRunTime++;
-    }
-    switch (operation)
-    {
-    case WAVE_UNAR_AND:
-        lsum = multiplicationTime;
-        lavg = multiplicationTime * (p * q * m);
-        break;
-    case WAVE_UNAR_OR:
-        lsum = (multiplicationTime + substractionTime) + substractionTime;
-        lavg = ((multiplicationTime + substractionTime) * m + substractionTime) * p * q;
-        break;
-    default:
-        break;
-    }
-    Lsum += lsum / subprocCount;
-    if(lsum % subprocCount != 0)
-    {
-        Lsum++;
-    }
-    Lavg += lavg / subprocCount;
-    if(lavg % subprocCount != 0)
-    {
-        Lavg++;
-    }
+    l_ksk += ceil((float)stageTime / subprocCount);
+    subprocessorRunTime += l_ksk;
+    Lsum += l_ksk;
+    Lavg += l_ksk * r_ksk;
 }
 
 void iterate_W_SMxSM_TDM(operation, SM1, SM2, x, y, z, targetTDM)
@@ -136,7 +64,7 @@ const short**** targetTDM;
             }
         }
     }
-    updateTimes(operation);
+    updateTimes(x * z + z * y);
 }
 
 void iterate_WI_SMxSM_TDM(operation, SM1, SM2, x, y, z, targetTDM)
@@ -165,7 +93,7 @@ const short**** targetTDM;
             }
         }
     }
-    updateTimes(operation);
+    updateTimes(z * y + x * z);
 }
 
 void iterate_UMxD_TDM(operation, UM, D, x, y, z, targetTDM)
@@ -194,7 +122,7 @@ const short**** targetTDM;
             }
         }
     }
-    updateTimes(operation);
+    updateTimes(z + 1);
 }
 
 void iterate_DxUM_TDM(operation, D, UM, x, y, z, targetTDM)
@@ -223,7 +151,7 @@ const short**** targetTDM;
             }
         }
     }
-    updateTimes(operation);
+    updateTimes(x * y * z + 1);
 }
 
 void iterate_TDMxTDM_TDM(operation, TDM1, TDM2, x, y, z, targetTDM)
@@ -252,6 +180,7 @@ const short**** targetTDM;
             }
         }
     }
+    updateTimes(x * y * z * 2);
 }
 
 void iterate_TDMxUM_TDM(operation, TDM, UM, x, y, z, targetTDM)
@@ -280,7 +209,7 @@ const short**** targetTDM;
             }
         }
     }
-    updateTimes(operation);
+    updateTimes(x * y * z + z);
 }
 
 void iterate_TDMxD_TDM(operation, TDM, D, x, y, z, targetTDM)
@@ -309,7 +238,7 @@ const short**** targetTDM;
             }
         }
     }
-    updateTimes(operation);
+    updateTimes(x * y * z + 1);
 }
 
 void iterate_IUNAR_TDM_SM(operation, TDM, digit, x, y, targetSM)
@@ -334,7 +263,7 @@ const short*** targetSM;
             currentSubproc = switchSubproc(&currentSubproc);
         }
     }
-    iUpdateTimes(operation);
+    updateTimes(x * y);
 }
 
 void iterate_SMxD_SM(operation, SM, D, x, y, targetSM)
@@ -359,7 +288,7 @@ const short*** targetSM;
             currentSubproc = switchSubproc(&currentSubproc);
         }
     }
-    iUpdateTimes(operation);
+    updateTimes(x * y + 1);
 }
 
 void iterate_DxSM_SM(operation, D, SM, x, y, targetSM)
@@ -372,7 +301,6 @@ const short*** targetSM;
 {
     int currentSubproc = 1;
     stageTime = 0;
-    int startTime = runTime;
 
     int i;
     int j;
@@ -385,7 +313,7 @@ const short*** targetSM;
             currentSubproc = switchSubproc(&currentSubproc);
         }
     }
-    iUpdateTimes(operation);
+    updateTimes(1 + x * y);
 }
 
 void iterate_SMxSM_SM(operation, SM1, SM2, x, y, targetSM)
@@ -410,5 +338,5 @@ const short*** targetSM;
             currentSubproc = switchSubproc(&currentSubproc);
         }
     }
-    iUpdateTimes(operation);
+    updateTimes(x * y * 2);
 }
