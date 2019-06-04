@@ -104,8 +104,6 @@ const int m;
 
 void startProgram()
 {
-    int jjj = 4000;
-    printf("x = %f \n", jjj / (float)subprocCount);
     outputString("Input addition calculation time: ");
     additionTime = inputInteger();
     outputString("Input substraction calculation time: ");
