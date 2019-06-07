@@ -22,10 +22,12 @@
 int main(int argc, char** argv)
 {
     outputString("Welcome in SIMDSysSim!\n");
-    outputString("Input subprocessor count: ");
-    subprocCount = inputInteger();
-    outputString("Starting a program...\n");
-
-    startProgram();
+    //outputString("Input subprocessor count: ");
+    //subprocCount = inputInteger();
+    //outputString("Starting a program...\n");
+    for(subprocCount = 1; subprocCount < 37; subprocCount = subprocCount + 5)
+    {
+        startProgram();
+    }
     return 1;
 }
