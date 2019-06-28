@@ -47,6 +47,7 @@ const int m;
     initTriDimMatrix(&matrixF, p, q, m);
     initFourDimMatrix(&TDBuffer, SUBEXPRESSION_LEVELS_COUNT, p, q, m);
 
+//                      |OPERATION        |OPERAND1           |OPERAND2     |X |Y |Z |TARGET       |r |
     iterate_W_SMxSM_TDM( WAVE_IMPLICATION, &matrixA,           &matrixB,     p, q, m, &TDBuffer[1], 2);
     iterate_UMxD_TDM(    MULTIPLICATION,   &matrixE[0],        2,            p, q, m, &TDBuffer[2], 1);
     iterate_UMxD_TDM(    SUBSTRACT,        &TDBuffer[2][0][0], 1,            p, q, m, &TDBuffer[2], 1);
@@ -78,6 +79,7 @@ const int m;
     initSquareMatrix(&matrixC, p, q);
     initTriDimMatrix(&SBuffer, SUBEXPRESSION_LEVELS_COUNT, p, q);
 
+//                      |OPERATION      |OPERAND1    |OPERAND2    |X |Y |TARGET      |r          |
     iterate_IUNAR_TDM_SM(WAVE_UNAR_AND,  &matrixF,    m,           p, q, &SBuffer[1], 10 * m);
     iterate_SMxD_SM(     MULTIPLICATION, &matrixG,    3,           p, q, &SBuffer[2], 1);
     iterate_SMxD_SM(     SUBSTRACT,      &SBuffer[2], 2,           p, q, &SBuffer[2], 1);
@@ -119,7 +121,7 @@ void startProgram()
     outputString("Input m: ");
     m = inputInteger();*/
     additionTime = substractionTime = multiplicationTime = comparationTime = 1;
-    p = q = m = 6;
+    p = q = m = 1;
     //outputString("Generating initial matrixes...\n");
 
     generateInitialMatrixes(p, q, m);
