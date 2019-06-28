@@ -16,35 +16,6 @@
 #include <stdio.h>
 #include "..\..\memory\data.c"
 
-void waveUnarAnd(operand, iterationNum, targetCell)
-const short** operand;
-const int* iterationNum;
-short* targetCell;
-{
-    *targetCell = 1;
-    int i;
-    for (i = 0; i < *iterationNum; i++)
-    {
-        *targetCell *= *(*operand + i);
-        runTime += multiplicationTime;
-    }
-}
-
-void waveUnarOr(operand, iterationNum, targetCell)
-const short** operand;
-const int* iterationNum;
-short* targetCell;
-{
-    *targetCell = 1;
-    int i;
-    for (i = 0; i < *iterationNum; i++)
-    {
-        *targetCell *= 1 - *(*operand + i);
-        runTime += multiplicationTime + substractionTime;
-    }
-    *targetCell = 1 - *targetCell;
-}
-
 void addition(operand1, operand2, targetCell)
 const short* operand1;
 const short* operand2;
@@ -53,7 +24,7 @@ short* targetCell;
     const short op1 = *operand1;
     const short op2 = *operand2;
     *targetCell = op1 + op2;
-    runTime += additionTime;
+    stageTime += additionTime;
 }
 
 void substract(operand1, operand2, targetCell)
@@ -64,7 +35,7 @@ short* targetCell;
     const short op1 = *operand1;
     const short op2 = *operand2;
     *targetCell = op1 - op2;
-    runTime += substractionTime;
+    stageTime += substractionTime;
 }
 
 void multiplication(operand1, operand2, targetCell)
@@ -75,7 +46,7 @@ short* targetCell;
     const short op1 = *operand1;
     const short op2 = *operand2;
     *targetCell = op1 * op2;
-    runTime += multiplicationTime;
+    stageTime += multiplicationTime;
 }
 
 void isLess(operand1, operand2, targetCell)
@@ -86,7 +57,7 @@ short* targetCell;
     const short op1 = *operand1;
     const short op2 = *operand2;
     *targetCell = (op1 < op2) ? 1 : 0;
-    runTime += comparationTime;
+    stageTime += comparationTime;
 }
 
 void waveBinAnd(operand1, operand2, targetCell)
@@ -97,7 +68,7 @@ short* targetCell;
     const short op1 = *operand1;
     const short op2 = *operand2;
     *targetCell = (op1 < op2) ? op1 : op2;
-    runTime += comparationTime;
+    stageTime += comparationTime;
 }
 
 void waveImplication(operand1, operand2, targetCell)
@@ -108,5 +79,35 @@ short* targetCell;
     const short op1 = *operand1;
     const short op2 = *operand2;
     *targetCell = ((1 - op1) > op2) ? (1 - op1) : op2;
-    runTime += comparationTime + substractionTime;
+    stageTime += comparationTime + substractionTime;
+}
+
+void waveUnarAnd(operand, iterationNum, targetCell)
+const short** operand;
+const int* iterationNum;
+short* targetCell;
+{
+    *targetCell = 1;
+    int i;
+    for (i = 0; i < *iterationNum; i++)
+    {
+        multiplication(targetCell, (*operand + i), targetCell);
+    }
+}
+
+void waveUnarOr(operand, iterationNum, targetCell)
+const short** operand;
+const int* iterationNum;
+short* targetCell;
+{
+    int one = 1;
+    int buffer;
+    *targetCell = 1;
+    int i;
+    for (i = 0; i < *iterationNum; i++)
+    {
+        substract(&one, (*operand + i), &buffer);
+        multiplication(targetCell, &buffer, targetCell);
+    }
+    substract(&one, targetCell, targetCell);
 }
